@@ -6,19 +6,19 @@ export const siteConfig = {
   navItems: [
     {
       label: "Home",
-      href: "/",
+      href: "https://yeriaddict.github.io/",
     },
     {
       label: "About",
-      href: "/about",
+      href: "https://yeriaddict.github.io/about",
     },
     {
       label: "Resume",
-      href: "/resume",
+      href: "https://yeriaddict.github.io/resume",
     },
     {
       label: "Projects",
-      href: "/projects",
+      href: "https://yeriaddict.github.io/projects",
     },
   ],
   links: {

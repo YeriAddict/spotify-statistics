@@ -37,7 +37,7 @@ export const Navbar = () => {
           <NavbarBrand as="li" className="gap-3 max-w-fit">
             <NextLink
               className="flex justify-start items-center gap-1"
-              href="/"
+              href="https://yeriaddict.github.io/"
             >
               <RabbitIcon />
               <p className="font-bold text-inherit">denis.leang</p>
