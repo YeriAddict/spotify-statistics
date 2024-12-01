@@ -1,0 +1,13 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@font-face {
+    font-family: "Roboto";
+    src: url("/fonts/roboto.ttf");
+}
+
+@font-face {
+    font-family: "Lora";
+    src: url("/fonts/lora.ttf");
+}
