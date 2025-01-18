@@ -1,7 +1,7 @@
 import "@/styles/globals.css";
 import { Metadata, Viewport } from "next";
 import clsx from "clsx";
-import { Divider } from "@nextui-org/divider";
+import { Divider } from "@heroui/divider";
 
 import { Providers } from "./providers";
 
