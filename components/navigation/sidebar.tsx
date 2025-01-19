@@ -1,18 +1,87 @@
+"use client";
+
 import React from "react";
 import NextLink from "next/link";
+import { Divider, Spacer } from "@heroui/react";
+import { Button } from "@heroui/button";
+import { usePathname } from "next/navigation";
+import clsx from "clsx";
+
+import {
+  AnalyticsIcon,
+  MicrophoneIcon,
+  MusicIcon,
+  RecentIcon,
+  VinylIcon,
+} from "../icons/general-icons";
 
 import { siteConfig } from "@/config/site";
 
 export const Sidebar = () => {
+  const pathname = usePathname();
+
+  const navSectionsWithIcons = siteConfig.sidebarNavItems.map((section) => ({
+    ...section,
+    items: section.items.map((item) => {
+      let icon;
+
+      switch (item.label) {
+        case "Activity":
+          icon = <RecentIcon />;
+          break;
+        case "Trends":
+          icon = <AnalyticsIcon />;
+          break;
+        case "Artists":
+          icon = <MicrophoneIcon />;
+          break;
+        case "Albums":
+          icon = <VinylIcon />;
+          break;
+        case "Songs":
+          icon = <MusicIcon />;
+          break;
+        default:
+          icon = null;
+      }
+
+      return { ...item, icon };
+    }),
+  }));
+
   return (
-    <div className="bg-gray-800 w-[15%] h-full flex flex-col gap-4 p-4">
-      {siteConfig.sidebarNavItems.map((item, index) => (
-        <NextLink key={index} href={item.href}>
-          <button className="w-full bg-blue-500 text-white py-2 px-4 rounded-lg hover:bg-blue-600">
-            {item.label}
-          </button>
-        </NextLink>
-      ))}
-    </div>
+    <>
+      <div className="w-[15%] h-full flex flex-col p-1 bg-primary-900">
+        {navSectionsWithIcons.map((section, sectionIndex) => (
+          <div key={sectionIndex}>
+            <p className="text-sm text-foreground font-bold mb-2">
+              {section.category}
+            </p>
+
+            {section.items.map((item, itemIndex) => (
+              <NextLink key={itemIndex} href={item.href}>
+                <Button
+                  className={clsx(
+                    "text-foreground w-full justify-start font-bold",
+                    pathname === item.href
+                      ? "bg-primary-700"
+                      : "bg-primary-900 hover:bg-primary-700",
+                  )}
+                  size="lg"
+                  startContent={item.icon}
+                >
+                  {item.label}
+                </Button>
+              </NextLink>
+            ))}
+
+            <Spacer y={2} />
+
+            {sectionIndex < navSectionsWithIcons.length - 1 && <Divider />}
+          </div>
+        ))}
+      </div>
+      <Divider orientation="vertical" />
+    </>
   );
 };

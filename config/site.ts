@@ -23,24 +23,19 @@ export const siteConfig = {
   ],
   sidebarNavItems: [
     {
-      label: "Activity",
-      href: "/activity",
+      category: "Analytics",
+      items: [
+        { label: "Activity", href: "/activity" },
+        { label: "Trends", href: "/trends" },
+      ],
     },
     {
-      label: "Trends",
-      href: "/trends",
-    },
-    {
-      label: "Artists",
-      href: "/top_artists",
-    },
-    {
-      label: "Albums",
-      href: "/top_albums",
-    },
-    {
-      label: "Songs",
-      href: "/top_songs",
+      category: "Records",
+      items: [
+        { label: "Artists", href: "/top_artists" },
+        { label: "Albums", href: "/top_albums" },
+        { label: "Songs", href: "/top_songs" },
+      ],
     },
   ],
   links: {
