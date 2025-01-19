@@ -21,6 +21,28 @@ export const siteConfig = {
       href: "https://yeriaddict.github.io/projects",
     },
   ],
+  sidebarNavItems: [
+    {
+      label: "Activity",
+      href: "/activity",
+    },
+    {
+      label: "Trends",
+      href: "/trends",
+    },
+    {
+      label: "Artists",
+      href: "/top_artists",
+    },
+    {
+      label: "Albums",
+      href: "/top_albums",
+    },
+    {
+      label: "Songs",
+      href: "/top_songs",
+    },
+  ],
   links: {
     github: "https://github.com/YeriAddict",
     linkedin: "https://www.linkedin.com/in/denis-leang/",

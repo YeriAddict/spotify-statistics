@@ -9,6 +9,7 @@ import { siteConfig } from "@/config/site";
 import { fontSans } from "@/config/fonts";
 import { Navbar } from "@/components/navigation/navbar";
 import { Footer } from "@/components/navigation/footer";
+import { Sidebar } from "@/components/navigation/sidebar";
 
 export const metadata: Metadata = {
   title: {
@@ -46,7 +47,10 @@ export default function RootLayout({
           <Providers themeProps={{ attribute: "class", defaultTheme: "dark" }}>
             <div className="relative flex flex-col h-screen">
               <Navbar />
-              <main className="w-full flex-grow">{children}</main>
+              <div className="flex flex-grow">
+                <Sidebar />
+                <main className="w-full flex-grow">{children}</main>
+              </div>
               <Divider />
               <Footer />
             </div>
