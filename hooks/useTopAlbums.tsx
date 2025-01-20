@@ -15,15 +15,17 @@ export const useTopAlbums = (pageSize = 10) => {
 
       const aggregatedAlbumsMap: Record<string, AlbumAggregate> = data.reduce(
         (acc, track) => {
-          if (!acc[track.album_name]) {
-            acc[track.album_name] = {
+          const key = `${track.artist_name}-${track.album_name}`;
+
+          if (!acc[key]) {
+            acc[key] = {
               album_name: track.album_name,
               artist_name: track.artist_name,
               total_duration: 0,
               rank: 0,
             };
           }
-          acc[track.album_name].total_duration += track.duration;
+          acc[key].total_duration += track.duration;
 
           return acc;
         },

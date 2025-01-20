@@ -15,8 +15,10 @@ export const useTopTracks = (pageSize = 10) => {
 
       const aggregatedTracksMap: Record<string, TrackAggregate> = data.reduce(
         (acc, track) => {
-          if (!acc[track.track_name]) {
-            acc[track.track_name] = {
+          const key = `${track.track_name}|${track.artist_name}|${track.album_name}`;
+
+          if (!acc[key]) {
+            acc[key] = {
               track_name: track.track_name,
               artist_name: track.artist_name,
               album_name: track.album_name,
@@ -25,7 +27,7 @@ export const useTopTracks = (pageSize = 10) => {
               rank: 0,
             };
           }
-          acc[track.track_name].total_duration += track.duration;
+          acc[key].total_duration += track.duration;
 
           return acc;
         },
