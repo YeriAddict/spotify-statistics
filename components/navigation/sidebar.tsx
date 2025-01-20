@@ -1,8 +1,7 @@
 "use client";
 
 import React from "react";
-import NextLink from "next/link";
-import { Divider, Spacer } from "@heroui/react";
+import { Divider, Link, Spacer } from "@heroui/react";
 import { Button } from "@heroui/button";
 import { usePathname } from "next/navigation";
 import clsx from "clsx";
@@ -59,20 +58,21 @@ export const Sidebar = () => {
             </p>
 
             {section.items.map((item, itemIndex) => (
-              <NextLink key={itemIndex} href={item.href}>
-                <Button
-                  className={clsx(
-                    "text-foreground w-full justify-start",
-                    pathname === item.href
-                      ? "bg-primary-600"
-                      : "bg-primary-800 hover:bg-primary-600",
-                  )}
-                  size="lg"
-                  startContent={item.icon}
-                >
-                  {item.label}
-                </Button>
-              </NextLink>
+              <Button
+                key={itemIndex}
+                as={Link}
+                className={clsx(
+                  "text-foreground w-full justify-start",
+                  pathname === item.href
+                    ? "bg-primary-600"
+                    : "bg-primary-800 hover:bg-primary-600",
+                )}
+                href={item.href}
+                size="lg"
+                startContent={item.icon}
+              >
+                {item.label}
+              </Button>
             ))}
 
             <Spacer y={2} />
