@@ -51,7 +51,7 @@ export const Sidebar = () => {
 
   return (
     <>
-      <div className="w-[15%] h-full flex flex-col p-1 bg-primary-900">
+      <div className="w-[15%] h-full flex flex-col p-1 bg-primary-800">
         {navSectionsWithIcons.map((section, sectionIndex) => (
           <div key={sectionIndex}>
             <p className="text-sm text-foreground font-bold mb-2">
@@ -62,10 +62,10 @@ export const Sidebar = () => {
               <NextLink key={itemIndex} href={item.href}>
                 <Button
                   className={clsx(
-                    "text-foreground w-full justify-start font-bold",
+                    "text-foreground w-full justify-start",
                     pathname === item.href
-                      ? "bg-primary-700"
-                      : "bg-primary-900 hover:bg-primary-700",
+                      ? "bg-primary-600"
+                      : "bg-primary-800 hover:bg-primary-600",
                   )}
                   size="lg"
                   startContent={item.icon}
