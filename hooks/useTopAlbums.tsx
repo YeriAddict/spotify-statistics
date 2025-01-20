@@ -10,7 +10,7 @@ export const useTopAlbums = (pageSize = 10) => {
 
   useEffect(() => {
     const fetchAlbums = async () => {
-      const response = await fetch("/data/spotify_data.json");
+      const response = await fetch("./data/spotify_data.json");
       const data: Track[] = await response.json();
 
       const aggregatedAlbumsMap: Record<string, AlbumAggregate> = data.reduce(

@@ -10,7 +10,7 @@ export const useTopArtists = (pageSize = 10) => {
 
   useEffect(() => {
     const fetchArtists = async () => {
-      const response = await fetch("/data/spotify_data.json");
+      const response = await fetch("./data/spotify_data.json");
       const data: Track[] = await response.json();
 
       const aggregatedArtistsMap: Record<string, ArtistAggregate> = data.reduce(

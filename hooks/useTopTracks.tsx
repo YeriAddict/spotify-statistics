@@ -10,7 +10,7 @@ export const useTopTracks = (pageSize = 10) => {
 
   useEffect(() => {
     const fetchTracks = async () => {
-      const response = await fetch("/data/spotify_data.json");
+      const response = await fetch("./data/spotify_data.json");
       const data: Track[] = await response.json();
 
       const aggregatedTracksMap: Record<string, TrackAggregate> = data.reduce(
