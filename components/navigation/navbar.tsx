@@ -89,7 +89,7 @@ export const Navbar = () => {
                   className="text-foreground"
                   href={item.href}
                   size="lg"
-                  onClick={handleMenuItemClick}
+                  onPress={handleMenuItemClick}
                 >
                   {item.label}
                 </Link>
