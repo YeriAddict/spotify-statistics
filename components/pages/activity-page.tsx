@@ -3,13 +3,39 @@
 import { Card, CardBody, CardHeader, Divider } from "@heroui/react";
 
 import { RecentTracksTable } from "../tables/recent-tracks-table";
+import { TodayCountCard } from "../cards/today-count-card";
 
 import { useRecentTracks } from "@/hooks/useRecentTracks";
+import { useTracksOnDate } from "@/hooks/useTracksOnDate";
+import { useArtistsOnDate } from "@/hooks/useArtistsOnDate";
+import { useTotalDurationOnDate } from "@/hooks/useTotalDurationOnDate";
 
 export default function ActivityPageComponent() {
   const { recentTracks, isLoading, hasMore, loadMore } = useRecentTracks();
 
-  const columns = [
+  const {
+    trackCount: currentTrackCount,
+    isLoading: isCurrentTrackCountLoading,
+  } = useTracksOnDate("2024-11-23");
+  const {
+    artistCount: currentArtistCount,
+    isLoading: isCurrentArtistCountLoading,
+  } = useArtistsOnDate("2024-11-23");
+  const {
+    totalDuration: currentTotalDuration,
+    isLoading: isCurrentTotalDurationLoading,
+  } = useTotalDurationOnDate("2024-11-23");
+
+  const { trackCount: prevTrackCount, isLoading: isPrevTrackCountLoading } =
+    useTracksOnDate("2024-11-22");
+  const { artistCount: prevArtistCount, isLoading: isPrevArtistCountLoading } =
+    useArtistsOnDate("2024-11-22");
+  const {
+    totalDuration: prevTotalDuration,
+    isLoading: isPrevTotalDurationLoading,
+  } = useTotalDurationOnDate("2024-11-22");
+
+  const recentTracksColumns = [
     { key: "timestamp", label: "Timestamp" },
     { key: "track_name", label: "Track Name" },
     { key: "artist_name", label: "Artist Name" },
@@ -22,37 +48,36 @@ export default function ActivityPageComponent() {
           <p className="text-foreground">Recent Activity</p>
         </div>
         <Divider />
+
         <div className="w-full h-[90%] flex items-center justify-center bg-primary-700 p-4">
           <div className="h-full w-full flex flex-col bg-primary-700">
             <div className="w-full h-[25%] flex flex-row gap-4 p-2">
-              <Card className="flex-1 bg-primary-500 border-primary-400 border-2">
-                <CardHeader className="flex bg-primary-700">
-                  <p className="font-semibold">Time listened</p>
-                </CardHeader>
-                <Divider />
-                <CardBody>
-                  <p>Make beautiful</p>
-                </CardBody>
-              </Card>
-              <Card className="flex-1 bg-primary-500 border-primary-400 border-2">
-                <CardHeader className="flex bg-primary-700">
-                  <p className="font-semibold">Songs listened</p>
-                </CardHeader>
-                <Divider />
-                <CardBody>
-                  <p>Make beautiful</p>
-                </CardBody>
-              </Card>
-              <Card className="flex-1 bg-primary-500 border-primary-400 border-2">
-                <CardHeader className="flex bg-primary-700">
-                  <p className="font-semibold">Artists listened</p>
-                </CardHeader>
-                <Divider />
-                <CardBody>
-                  <p>Make beautiful</p>
-                </CardBody>
-              </Card>
+              <TodayCountCard
+                currentValue={currentTotalDuration}
+                isLoading={
+                  isCurrentTotalDurationLoading || isPrevTotalDurationLoading
+                }
+                previousValue={prevTotalDuration}
+                title="Time listened"
+              />
+              <TodayCountCard
+                currentValue={currentTrackCount}
+                isLoading={
+                  isCurrentTrackCountLoading || isPrevTrackCountLoading
+                }
+                previousValue={prevTrackCount}
+                title="Songs listened"
+              />
+              <TodayCountCard
+                currentValue={currentArtistCount}
+                isLoading={
+                  isCurrentArtistCountLoading || isPrevArtistCountLoading
+                }
+                previousValue={prevArtistCount}
+                title="Artists listened"
+              />
             </div>
+
             <div className="w-full h-[75%] flex flex-row gap-4 p-2">
               <div className="flex flex-col flex-[2] gap-y-4">
                 <Card className="flex-1 bg-primary-500 border-primary-400 border-2">
@@ -61,7 +86,7 @@ export default function ActivityPageComponent() {
                   </CardHeader>
                   <Divider />
                   <CardBody>
-                    <p>Make beautiful</p>
+                    <p>Additional insights here</p>
                   </CardBody>
                 </Card>
                 <Card className="flex-1 bg-primary-500 border-primary-400 border-2">
@@ -70,7 +95,7 @@ export default function ActivityPageComponent() {
                   </CardHeader>
                   <Divider />
                   <CardBody>
-                    <p>Make beautiful</p>
+                    <p>Additional insights here</p>
                   </CardBody>
                 </Card>
               </div>
@@ -82,7 +107,7 @@ export default function ActivityPageComponent() {
                   </CardHeader>
                   <Divider />
                   <CardBody>
-                    <p>Make beautiful</p>
+                    <p>Artist details here</p>
                   </CardBody>
                 </Card>
                 <Card className="flex-1 bg-primary-500 border-primary-400 border-2">
@@ -91,7 +116,7 @@ export default function ActivityPageComponent() {
                   </CardHeader>
                   <Divider />
                   <CardBody>
-                    <p>Make beautiful</p>
+                    <p>Song details here</p>
                   </CardBody>
                 </Card>
               </div>
@@ -104,7 +129,7 @@ export default function ActivityPageComponent() {
                   <Divider />
                   <CardBody>
                     <RecentTracksTable
-                      columns={columns}
+                      columns={recentTracksColumns}
                       data={recentTracks}
                       hasMore={hasMore}
                       isLoading={isLoading}
