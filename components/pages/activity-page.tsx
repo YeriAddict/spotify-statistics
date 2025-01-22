@@ -1,10 +1,11 @@
 "use client";
 
-import { Card, CardBody, CardHeader, Divider } from "@heroui/react";
+import { Divider } from "@heroui/react";
 
 import { ActivityCountCard } from "../cards/activity-count-card";
 import { ActivityTopCard } from "../cards/activity-top-card";
 import { ActivityRecentTracksCard } from "../cards/activity-recent-card";
+import { ActivityBreakdownCard } from "../cards/activity-breakdown-card";
 
 import { useRecentTracks } from "@/hooks/useRecentTracks";
 import { useTracksOnDate } from "@/hooks/onDate/useTracksOnDate";
@@ -20,32 +21,32 @@ export default function ActivityPageComponent() {
   const {
     trackCount: currentTrackCount,
     isLoading: isCurrentTrackCountLoading,
-  } = useTracksOnDate("2024-11-23");
+  } = useTracksOnDate("2024-11-19");
   const {
     artistCount: currentArtistCount,
     isLoading: isCurrentArtistCountLoading,
-  } = useArtistsOnDate("2024-11-23");
+  } = useArtistsOnDate("2024-11-19");
   const {
     totalDuration: currentTotalDuration,
     isLoading: isCurrentTotalDurationLoading,
-  } = useTotalDurationOnDate("2024-11-23");
+  } = useTotalDurationOnDate("2024-11-19");
   const { topArtist: currentTopArtist, isLoading: isCurrentTopArtistLoading } =
-    useTopArtistOnDate("2024-11-23");
+    useTopArtistOnDate("2024-11-19");
   const { topTrack: currentTopTrack, isLoading: isCurrentTopTrackLoading } =
-    useTopTrackOnDate("2024-11-23");
+    useTopTrackOnDate("2024-11-19");
 
   const { trackCount: prevTrackCount, isLoading: isPrevTrackCountLoading } =
-    useTracksOnDate("2024-11-22");
+    useTracksOnDate("2024-11-18");
   const { artistCount: prevArtistCount, isLoading: isPrevArtistCountLoading } =
-    useArtistsOnDate("2024-11-22");
+    useArtistsOnDate("2024-11-18");
   const {
     totalDuration: prevTotalDuration,
     isLoading: isPrevTotalDurationLoading,
-  } = useTotalDurationOnDate("2024-11-22");
+  } = useTotalDurationOnDate("2024-11-18");
   const { topArtist: prevTopArtist, isLoading: isPrevTopArtistLoading } =
-    useTopArtistOnDate("2024-11-22");
+    useTopArtistOnDate("2024-11-18");
   const { topTrack: prevTopTrack, isLoading: isPrevTopTrackLoading } =
-    useTopTrackOnDate("2024-11-22");
+    useTopTrackOnDate("2024-11-18");
 
   const recentTracksColumns = [
     { key: "timestamp", label: "Timestamp" },
@@ -92,19 +93,23 @@ export default function ActivityPageComponent() {
 
             <div className="w-full h-[75%] flex flex-row gap-4 p-2">
               <div className="flex flex-col flex-[2] gap-y-4">
-                <Card className="flex-1 bg-primary-500 border-primary-400 border-2">
-                  <CardHeader className="flex bg-primary-700">
-                    <p className="font-semibold">Listening Breakdown</p>
-                  </CardHeader>
-                  <Divider />
-                  <CardBody>
-                    <div className="flex flex-col gap-y-4">
-                      <div>
-                        <p>Details about the first set of insights go here.</p>
-                      </div>
-                    </div>
-                  </CardBody>
-                </Card>
+                <ActivityBreakdownCard
+                  tabs={[
+                    {
+                      key: "tab1",
+                      title: "Tab 1",
+                      isLoading: false,
+                      content: <p>Hi from Tab 1</p>,
+                    },
+                    {
+                      key: "tab2",
+                      title: "Tab 2",
+                      isLoading: false,
+                      content: <p>Hi from Tab 2</p>,
+                    },
+                  ]}
+                  title="Listening Breakdown"
+                />
               </div>
 
               <div className="flex flex-col flex-[1] gap-y-4">

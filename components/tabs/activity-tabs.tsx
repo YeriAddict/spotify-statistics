@@ -13,9 +13,14 @@ interface TabContentProps {
 interface ActivityTopTabsProps {
   tabs: TabContentProps[];
   className?: string;
+  contentClassName?: string;
 }
 
-export function ActivityTopTabs({ tabs, className }: ActivityTopTabsProps) {
+export function ActivityTabs({
+  tabs,
+  className,
+  contentClassName,
+}: ActivityTopTabsProps) {
   return (
     <Tabs
       fullWidth
@@ -38,9 +43,7 @@ export function ActivityTopTabs({ tabs, className }: ActivityTopTabsProps) {
             {tab.isLoading ? (
               <Spinner color="white" />
             ) : (
-              <div className="flex w-[75%] items-center justify-center">
-                {tab.content}
-              </div>
+              <div className={contentClassName}>{tab.content}</div>
             )}
           </div>
         </Tab>

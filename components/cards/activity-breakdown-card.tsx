@@ -17,7 +17,7 @@ interface ActivityTopCardProps {
   tabs: TabContentProps[];
 }
 
-export function ActivityTopCard({ title, tabs }: ActivityTopCardProps) {
+export function ActivityBreakdownCard({ title, tabs }: ActivityTopCardProps) {
   return (
     <Card className="flex-1 bg-primary-500 border-primary-400 border-2">
       <CardHeader className="flex bg-primary-700">
@@ -26,7 +26,7 @@ export function ActivityTopCard({ title, tabs }: ActivityTopCardProps) {
       <Divider />
       <CardBody className="p-0">
         <ActivityTabs
-          contentClassName="flex w-[75%] items-center justify-center"
+          contentClassName="flex w-[100%] items-center justify-center"
           tabs={tabs}
         />
       </CardBody>
