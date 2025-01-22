@@ -14,7 +14,7 @@ interface StatCardProps {
   isLoading: boolean;
 }
 
-export function TodayCountCard({
+export function ActivityCountCard({
   title,
   currentValue,
   previousValue,

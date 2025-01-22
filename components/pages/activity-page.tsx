@@ -2,13 +2,17 @@
 
 import { Card, CardBody, CardHeader, Divider } from "@heroui/react";
 
-import { RecentTracksTable } from "../tables/recent-tracks-table";
-import { TodayCountCard } from "../cards/today-count-card";
+import { ActivityCountCard } from "../cards/activity-count-card";
+import { ActivityTopCard } from "../cards/activity-top-card";
+import { ActivityRecentTracksCard } from "../cards/activity-recent-card";
 
 import { useRecentTracks } from "@/hooks/useRecentTracks";
-import { useTracksOnDate } from "@/hooks/useTracksOnDate";
-import { useArtistsOnDate } from "@/hooks/useArtistsOnDate";
-import { useTotalDurationOnDate } from "@/hooks/useTotalDurationOnDate";
+import { useTracksOnDate } from "@/hooks/onDate/useTracksOnDate";
+import { useArtistsOnDate } from "@/hooks/onDate/useArtistsOnDate";
+import { useTotalDurationOnDate } from "@/hooks/onDate/useTotalDurationOnDate";
+import { useTopTrackOnDate } from "@/hooks/onDate/useTopTrackOnDate";
+import { useTopArtistOnDate } from "@/hooks/onDate/useTopArtistOnDate";
+import { secondsToString } from "@/utils/string-operations";
 
 export default function ActivityPageComponent() {
   const { recentTracks, isLoading, hasMore, loadMore } = useRecentTracks();
@@ -25,6 +29,10 @@ export default function ActivityPageComponent() {
     totalDuration: currentTotalDuration,
     isLoading: isCurrentTotalDurationLoading,
   } = useTotalDurationOnDate("2024-11-23");
+  const { topArtist: currentTopArtist, isLoading: isCurrentTopArtistLoading } =
+    useTopArtistOnDate("2024-11-23");
+  const { topTrack: currentTopTrack, isLoading: isCurrentTopTrackLoading } =
+    useTopTrackOnDate("2024-11-23");
 
   const { trackCount: prevTrackCount, isLoading: isPrevTrackCountLoading } =
     useTracksOnDate("2024-11-22");
@@ -34,6 +42,10 @@ export default function ActivityPageComponent() {
     totalDuration: prevTotalDuration,
     isLoading: isPrevTotalDurationLoading,
   } = useTotalDurationOnDate("2024-11-22");
+  const { topArtist: prevTopArtist, isLoading: isPrevTopArtistLoading } =
+    useTopArtistOnDate("2024-11-22");
+  const { topTrack: prevTopTrack, isLoading: isPrevTopTrackLoading } =
+    useTopTrackOnDate("2024-11-22");
 
   const recentTracksColumns = [
     { key: "timestamp", label: "Timestamp" },
@@ -52,7 +64,7 @@ export default function ActivityPageComponent() {
         <div className="w-full h-[90%] flex items-center justify-center bg-primary-700 p-4">
           <div className="h-full w-full flex flex-col bg-primary-700">
             <div className="w-full h-[25%] flex flex-row gap-4 p-2">
-              <TodayCountCard
+              <ActivityCountCard
                 currentValue={currentTotalDuration}
                 isLoading={
                   isCurrentTotalDurationLoading || isPrevTotalDurationLoading
@@ -60,7 +72,7 @@ export default function ActivityPageComponent() {
                 previousValue={prevTotalDuration}
                 title="Time listened"
               />
-              <TodayCountCard
+              <ActivityCountCard
                 currentValue={currentTrackCount}
                 isLoading={
                   isCurrentTrackCountLoading || isPrevTrackCountLoading
@@ -68,7 +80,7 @@ export default function ActivityPageComponent() {
                 previousValue={prevTrackCount}
                 title="Songs listened"
               />
-              <TodayCountCard
+              <ActivityCountCard
                 currentValue={currentArtistCount}
                 isLoading={
                   isCurrentArtistCountLoading || isPrevArtistCountLoading
@@ -82,62 +94,128 @@ export default function ActivityPageComponent() {
               <div className="flex flex-col flex-[2] gap-y-4">
                 <Card className="flex-1 bg-primary-500 border-primary-400 border-2">
                   <CardHeader className="flex bg-primary-700">
-                    <p className="font-semibold">Songs listened</p>
+                    <p className="font-semibold">Listening Breakdown</p>
                   </CardHeader>
                   <Divider />
                   <CardBody>
-                    <p>Additional insights here</p>
-                  </CardBody>
-                </Card>
-                <Card className="flex-1 bg-primary-500 border-primary-400 border-2">
-                  <CardHeader className="flex bg-primary-700">
-                    <p className="font-semibold">Songs listened</p>
-                  </CardHeader>
-                  <Divider />
-                  <CardBody>
-                    <p>Additional insights here</p>
+                    <div className="flex flex-col gap-y-4">
+                      <div>
+                        <p>Details about the first set of insights go here.</p>
+                      </div>
+                    </div>
                   </CardBody>
                 </Card>
               </div>
 
               <div className="flex flex-col flex-[1] gap-y-4">
-                <Card className="flex-1 bg-primary-500 border-primary-400 border-2">
-                  <CardHeader className="flex bg-primary-700">
-                    <p className="font-semibold">Most listened artist</p>
-                  </CardHeader>
-                  <Divider />
-                  <CardBody>
-                    <p>Artist details here</p>
-                  </CardBody>
-                </Card>
-                <Card className="flex-1 bg-primary-500 border-primary-400 border-2">
-                  <CardHeader className="flex bg-primary-700">
-                    <p className="font-semibold">Most listened song</p>
-                  </CardHeader>
-                  <Divider />
-                  <CardBody>
-                    <p>Song details here</p>
-                  </CardBody>
-                </Card>
+                <ActivityTopCard
+                  tabs={[
+                    {
+                      key: "today",
+                      title: "Today",
+                      isLoading: isCurrentTopArtistLoading,
+                      content: currentTopArtist ? (
+                        <ul className="list-disc">
+                          <li>
+                            <strong>Artist:</strong>{" "}
+                            {currentTopArtist.artist_name}
+                          </li>
+                          <li>
+                            <strong>Total Duration:</strong>{" "}
+                            {secondsToString(currentTopArtist.total_duration)}
+                          </li>
+                        </ul>
+                      ) : (
+                        <p>No top artist available</p>
+                      ),
+                    },
+                    {
+                      key: "yesterday",
+                      title: "Yesterday",
+                      isLoading: isPrevTopArtistLoading,
+                      content: prevTopArtist ? (
+                        <ul className="list-disc">
+                          <li>
+                            <strong>Artist:</strong> {prevTopArtist.artist_name}
+                          </li>
+                          <li>
+                            <strong>Total Duration:</strong>{" "}
+                            {secondsToString(prevTopArtist.total_duration)}
+                          </li>
+                        </ul>
+                      ) : (
+                        <p>No top artist available</p>
+                      ),
+                    },
+                  ]}
+                  title="Most Listened Artist"
+                />
+                <ActivityTopCard
+                  tabs={[
+                    {
+                      key: "today",
+                      title: "Today",
+                      isLoading: isCurrentTopTrackLoading,
+                      content: currentTopTrack ? (
+                        <ul className="list-disc">
+                          <li>
+                            <strong>Track Name:</strong>{" "}
+                            {currentTopTrack.track_name}
+                          </li>
+                          <li>
+                            <strong>Artist:</strong>{" "}
+                            {currentTopTrack.artist_name}
+                          </li>
+                          <li>
+                            <strong>Album:</strong> {currentTopTrack.album_name}
+                          </li>
+                          <li>
+                            <strong>Total Duration:</strong>{" "}
+                            {secondsToString(currentTopTrack.total_duration)}
+                          </li>
+                        </ul>
+                      ) : (
+                        <p>No top track available</p>
+                      ),
+                    },
+                    {
+                      key: "yesterday",
+                      title: "Yesterday",
+                      isLoading: isPrevTopTrackLoading,
+                      content: prevTopTrack ? (
+                        <ul className="list-disc">
+                          <li>
+                            <strong>Track Name:</strong>{" "}
+                            {prevTopTrack.track_name}
+                          </li>
+                          <li>
+                            <strong>Artist:</strong> {prevTopTrack.artist_name}
+                          </li>
+                          <li>
+                            <strong>Album:</strong> {prevTopTrack.album_name}
+                          </li>
+                          <li>
+                            <strong>Total Duration:</strong>{" "}
+                            {secondsToString(prevTopTrack.total_duration)}
+                          </li>
+                        </ul>
+                      ) : (
+                        <p>No top track available</p>
+                      ),
+                    },
+                  ]}
+                  title="Most Listened Track"
+                />
               </div>
 
               <div className="flex flex-col flex-[1]">
-                <Card className="flex-1 bg-primary-500 border-primary-400 border-2">
-                  <CardHeader className="flex bg-primary-700">
-                    <p className="font-semibold">Last songs listened</p>
-                  </CardHeader>
-                  <Divider />
-                  <CardBody>
-                    <RecentTracksTable
-                      columns={recentTracksColumns}
-                      data={recentTracks}
-                      hasMore={hasMore}
-                      isLoading={isLoading}
-                      title="Last Songs Listened"
-                      onLoadMore={loadMore}
-                    />
-                  </CardBody>
-                </Card>
+                <ActivityRecentTracksCard
+                  columns={recentTracksColumns}
+                  data={recentTracks}
+                  hasMore={hasMore}
+                  isLoading={isLoading}
+                  onLoadMore={loadMore}
+                />
               </div>
             </div>
           </div>
