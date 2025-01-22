@@ -3,7 +3,7 @@
 import React from "react";
 import { Card, CardHeader, CardBody, Divider } from "@heroui/react";
 
-import { RecentTracksTable } from "../tables/recent-tracks-table";
+import { RecordTable } from "../tables/record-table";
 
 interface ActivityRecentCardProps {
   columns: { key: string; label: string }[];
@@ -29,7 +29,11 @@ export function ActivityRecentTracksCard({
       </CardHeader>
       <Divider />
       <CardBody>
-        <RecentTracksTable
+        <RecordTable
+          classNames={{
+            th: "bg-primary-700 text-[12px]",
+            td: "text-[12px]",
+          }}
           columns={columns}
           data={data}
           hasMore={hasMore}

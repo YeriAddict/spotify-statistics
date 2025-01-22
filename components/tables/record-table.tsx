@@ -17,13 +17,19 @@ interface Column {
   label: string;
 }
 
-interface RecordTableProps {
+interface GenericTableProps {
   title?: string;
   columns: Column[];
   data: Record<string, any>[];
   isLoading: boolean;
   hasMore: boolean;
   onLoadMore: () => void;
+  classNames?: {
+    base?: string;
+    wrapper?: string;
+    th?: string;
+    td?: string;
+  };
 }
 
 export function RecordTable({
@@ -33,7 +39,8 @@ export function RecordTable({
   isLoading,
   hasMore,
   onLoadMore,
-}: RecordTableProps) {
+  classNames = {},
+}: GenericTableProps) {
   const [loaderRef, scrollerRef] = useInfiniteScroll({
     hasMore,
     onLoadMore,
@@ -51,9 +58,11 @@ export function RecordTable({
         ) : null
       }
       classNames={{
-        base: "h-full w-full",
-        wrapper: "bg-primary-500 border-primary-400 border-2",
-        th: "bg-primary-700",
+        base: classNames.base || "h-full w-full",
+        wrapper:
+          classNames.wrapper || "bg-primary-500 border-primary-400 border-2",
+        th: classNames.th || "bg-primary-700",
+        td: classNames.td || "",
       }}
     >
       <TableHeader>
