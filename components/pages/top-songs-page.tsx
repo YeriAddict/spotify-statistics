@@ -8,6 +8,14 @@ import { RecordTable } from "../tables/record-table";
 import { useTopTracks } from "@/hooks/useTopTracks";
 
 export default function TopSongsPageComponent() {
+  const dropdownItems = [
+    { key: "today", label: "Today" },
+    { key: "this_week", label: "This Week" },
+    { key: "this_month", label: "This Month" },
+    { key: "this_year", label: "This Year" },
+    { key: "all_time", label: "All Time" },
+  ];
+
   const { tracks, isLoading, hasMore, loadMore } = useTopTracks(10);
 
   const columns = [
@@ -23,7 +31,7 @@ export default function TopSongsPageComponent() {
       <div className="h-[calc(100vh-106px)]">
         <div className="w-full h-[10%] flex items-center justify-between bg-primary-700 p-4">
           <p className="text-foreground">Most Listened Songs</p>
-          <PeriodDropdown />
+          <PeriodDropdown items={dropdownItems} />
         </div>
         <Divider />
         <div className="w-full h-[90%] flex items-center justify-center bg-primary-700 p-4">

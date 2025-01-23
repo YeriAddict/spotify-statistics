@@ -1,3 +1,4 @@
+import React from "react";
 import {
   Dropdown,
   DropdownTrigger,
@@ -5,27 +6,30 @@ import {
   DropdownItem,
   Button,
 } from "@heroui/react";
-import React from "react";
 
 import { ChevronDownIcon } from "../icons/general-icons";
 
-export default function PeriodDropdown() {
-  const [selectedKeys, setSelectedKeys] = React.useState(new Set(["last_day"]));
+interface DropdownItemProps {
+  key: string;
+  label: string;
+}
 
-  const formatKey = (key: string) => {
-    return key
-      .split("_")
-      .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
-      .join(" ");
-  };
+interface PeriodDropdownProps {
+  items: DropdownItemProps[];
+}
+
+export default function PeriodDropdown({ items }: PeriodDropdownProps) {
+  const [selectedKeys, setSelectedKeys] = React.useState(
+    new Set([items[0]?.key || ""]),
+  );
 
   const selectedValue = React.useMemo(() => {
     if (selectedKeys.size === 0) return "";
 
     return Array.from(selectedKeys)
-      .map((key) => formatKey(key as string))
+      .map((key) => items.find((item) => item.key === key)?.label || "")
       .join(", ");
-  }, [selectedKeys]);
+  }, [selectedKeys, items]);
 
   return (
     <Dropdown
@@ -52,18 +56,11 @@ export default function PeriodDropdown() {
           setSelectedKeys(new Set(keys as Set<string>))
         }
       >
-        <DropdownItem key="last_day" className="hover:bg-primary-500">
-          Last Day
-        </DropdownItem>
-        <DropdownItem key="last_month" className="hover:bg-primary-500">
-          Last Month
-        </DropdownItem>
-        <DropdownItem key="last_year" className="hover:bg-primary-500">
-          Last Year
-        </DropdownItem>
-        <DropdownItem key="all_time" className="hover:bg-primary-500">
-          All Time
-        </DropdownItem>
+        {items.map((item) => (
+          <DropdownItem key={item.key} className="hover:bg-primary-500">
+            {item.label}
+          </DropdownItem>
+        ))}
       </DropdownMenu>
     </Dropdown>
   );

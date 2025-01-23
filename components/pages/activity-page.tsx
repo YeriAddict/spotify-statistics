@@ -7,6 +7,7 @@ import { ActivityTopCard } from "../cards/activity-top-card";
 import { ActivityRecentTracksCard } from "../cards/activity-recent-card";
 import { ActivityBreakdownCard } from "../cards/activity-breakdown-card";
 import BreakdownBarChart from "../charts/breakdown-barchart";
+import PeriodDropdown from "../dropdowns/period-dropdown";
 
 import { useRecentTracks } from "@/hooks/useRecentTracks";
 import { useTracksOnDate } from "@/hooks/onDate/useTracksOnDate";
@@ -18,6 +19,13 @@ import { secondsToString } from "@/utils/string-operations";
 import { useHourlyListeningOnDate } from "@/hooks/onDate/useHourlyListeningOnDate";
 
 export default function ActivityPageComponent() {
+  const dropdownItems = [
+    { key: "today", label: "Today" },
+    { key: "last_week", label: "This Week" },
+    { key: "last_month", label: "This Month" },
+    { key: "last_year", label: "This Year" },
+  ];
+
   const {
     hourlyListening: currentHourlyListening,
     isLoading: isCurrentHourlyListeningLoading,
@@ -82,6 +90,7 @@ export default function ActivityPageComponent() {
       <div className="h-[calc(100vh-106px)]">
         <div className="w-full h-[10%] flex items-center justify-between bg-primary-700 p-4">
           <p className="text-foreground">Recent Activity</p>
+          <PeriodDropdown items={dropdownItems} />
         </div>
         <Divider />
 
@@ -127,7 +136,6 @@ export default function ActivityPageComponent() {
                           <BreakdownBarChart
                             data={currentHourlyListeningData}
                           />
-                          ;
                         </div>
                       ),
                     },
