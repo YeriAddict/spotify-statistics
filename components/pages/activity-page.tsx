@@ -6,6 +6,7 @@ import { ActivityCountCard } from "../cards/activity-count-card";
 import { ActivityTopCard } from "../cards/activity-top-card";
 import { ActivityRecentTracksCard } from "../cards/activity-recent-card";
 import { ActivityBreakdownCard } from "../cards/activity-breakdown-card";
+import BreakdownBarChart from "../charts/breakdown-barchart";
 
 import { useRecentTracks } from "@/hooks/useRecentTracks";
 import { useTracksOnDate } from "@/hooks/onDate/useTracksOnDate";
@@ -14,40 +15,62 @@ import { useTotalDurationOnDate } from "@/hooks/onDate/useTotalDurationOnDate";
 import { useTopTrackOnDate } from "@/hooks/onDate/useTopTrackOnDate";
 import { useTopArtistOnDate } from "@/hooks/onDate/useTopArtistOnDate";
 import { secondsToString } from "@/utils/string-operations";
+import { useHourlyListeningOnDate } from "@/hooks/onDate/useHourlyListeningOnDate";
 
 export default function ActivityPageComponent() {
-  const { recentTracks, isLoading, hasMore, loadMore } = useRecentTracks();
+  const {
+    hourlyListening: currentHourlyListening,
+    isLoading: isCurrentHourlyListeningLoading,
+  } = useHourlyListeningOnDate("2024-11-25");
+  const currentHourlyListeningData = currentHourlyListening.map(
+    (seconds, hour) => ({
+      hour: `${hour}:00`,
+      duration: Number((seconds / 60).toFixed(2)),
+    }),
+  );
+  const {
+    hourlyListening: prevHourlyListening,
+    isLoading: isPrevHourlyListeningLoading,
+  } = useHourlyListeningOnDate("2024-11-24");
+  const prevHourlyListeningData = prevHourlyListening.map((seconds, hour) => ({
+    hour: `${hour}:00`,
+    duration: Number((seconds / 60).toFixed(2)),
+  }));
 
   const {
     trackCount: currentTrackCount,
     isLoading: isCurrentTrackCountLoading,
-  } = useTracksOnDate("2024-11-19");
+  } = useTracksOnDate("2024-11-25");
+  const { trackCount: prevTrackCount, isLoading: isPrevTrackCountLoading } =
+    useTracksOnDate("2024-11-24");
+
   const {
     artistCount: currentArtistCount,
     isLoading: isCurrentArtistCountLoading,
-  } = useArtistsOnDate("2024-11-19");
+  } = useArtistsOnDate("2024-11-25");
+  const { artistCount: prevArtistCount, isLoading: isPrevArtistCountLoading } =
+    useArtistsOnDate("2024-11-24");
+
   const {
     totalDuration: currentTotalDuration,
     isLoading: isCurrentTotalDurationLoading,
-  } = useTotalDurationOnDate("2024-11-19");
-  const { topArtist: currentTopArtist, isLoading: isCurrentTopArtistLoading } =
-    useTopArtistOnDate("2024-11-19");
-  const { topTrack: currentTopTrack, isLoading: isCurrentTopTrackLoading } =
-    useTopTrackOnDate("2024-11-19");
-
-  const { trackCount: prevTrackCount, isLoading: isPrevTrackCountLoading } =
-    useTracksOnDate("2024-11-18");
-  const { artistCount: prevArtistCount, isLoading: isPrevArtistCountLoading } =
-    useArtistsOnDate("2024-11-18");
+  } = useTotalDurationOnDate("2024-11-25");
   const {
     totalDuration: prevTotalDuration,
     isLoading: isPrevTotalDurationLoading,
-  } = useTotalDurationOnDate("2024-11-18");
-  const { topArtist: prevTopArtist, isLoading: isPrevTopArtistLoading } =
-    useTopArtistOnDate("2024-11-18");
-  const { topTrack: prevTopTrack, isLoading: isPrevTopTrackLoading } =
-    useTopTrackOnDate("2024-11-18");
+  } = useTotalDurationOnDate("2024-11-24");
 
+  const { topArtist: currentTopArtist, isLoading: isCurrentTopArtistLoading } =
+    useTopArtistOnDate("2024-11-25");
+  const { topArtist: prevTopArtist, isLoading: isPrevTopArtistLoading } =
+    useTopArtistOnDate("2024-11-24");
+
+  const { topTrack: currentTopTrack, isLoading: isCurrentTopTrackLoading } =
+    useTopTrackOnDate("2024-11-25");
+  const { topTrack: prevTopTrack, isLoading: isPrevTopTrackLoading } =
+    useTopTrackOnDate("2024-11-24");
+
+  const { recentTracks, isLoading, hasMore, loadMore } = useRecentTracks();
   const recentTracksColumns = [
     { key: "timestamp", label: "Timestamp" },
     { key: "track_name", label: "Track Name" },
@@ -96,16 +119,27 @@ export default function ActivityPageComponent() {
                 <ActivityBreakdownCard
                   tabs={[
                     {
-                      key: "tab1",
-                      title: "Tab 1",
-                      isLoading: false,
-                      content: <p>Hi from Tab 1</p>,
+                      key: "today",
+                      title: "Today",
+                      isLoading: isCurrentHourlyListeningLoading,
+                      content: (
+                        <div className="w-full h-[350px] pt-6">
+                          <BreakdownBarChart
+                            data={currentHourlyListeningData}
+                          />
+                          ;
+                        </div>
+                      ),
                     },
                     {
-                      key: "tab2",
-                      title: "Tab 2",
-                      isLoading: false,
-                      content: <p>Hi from Tab 2</p>,
+                      key: "yesterday",
+                      title: "Yesterday",
+                      isLoading: isPrevHourlyListeningLoading,
+                      content: (
+                        <div className="w-full h-[350px] pt-6">
+                          <BreakdownBarChart data={prevHourlyListeningData} />;
+                        </div>
+                      ),
                     },
                   ]}
                   title="Listening Breakdown"

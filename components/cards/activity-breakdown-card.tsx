@@ -26,7 +26,7 @@ export function ActivityBreakdownCard({ title, tabs }: ActivityTopCardProps) {
       <Divider />
       <CardBody className="p-0">
         <ActivityTabs
-          contentClassName="flex w-[100%] items-center justify-center"
+          contentClassName="flex w-full items-center justify-center"
           tabs={tabs}
         />
       </CardBody>
