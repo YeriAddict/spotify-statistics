@@ -2,10 +2,8 @@ import { useState, useEffect } from "react";
 
 import { Track } from "@/types/music";
 
-export const useWeeklyListeningOnMonth = (year: number, month: number) => {
-  const [monthlyListening, setMonthlyListening] = useState<number[]>(
-    Array(5).fill(0),
-  );
+export const useListeningBreakdownOnMonth = (year: number, month: number) => {
+  const [monthlyListening, setMonthlyListening] = useState<number[]>([]);
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
@@ -18,21 +16,27 @@ export const useWeeklyListeningOnMonth = (year: number, month: number) => {
 
         return (
           trackDate.getUTCFullYear() === year &&
-          trackDate.getUTCMonth() + 1 === month
+          trackDate.getUTCMonth() === month - 1
         );
       });
 
-      const monthlyAccumulator = Array(5).fill(0);
+      const daysInMonth = new Date(year, month, 0).getDate();
+
+      const dailyAccumulator = Array(daysInMonth).fill(0);
 
       filteredTracks.forEach((track) => {
         const trackStart = new Date(track.timestamp);
-        const weekOfMonth = Math.floor((trackStart.getDate() - 1) / 7);
-        const durationInSeconds = Math.floor(track.duration / 1000);
+        const day = trackStart.getUTCDate() - 1;
+        const durationInMilliseconds = track.duration;
 
-        monthlyAccumulator[weekOfMonth] += durationInSeconds;
+        dailyAccumulator[day] += durationInMilliseconds;
       });
 
-      setMonthlyListening(monthlyAccumulator);
+      const dailyListeningInSeconds = dailyAccumulator.map((ms) =>
+        Math.floor(ms / 1000),
+      );
+
+      setMonthlyListening(dailyListeningInSeconds);
       setIsLoading(false);
     };
 

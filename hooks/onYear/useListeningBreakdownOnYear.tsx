@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 
 import { Track } from "@/types/music";
 
-export const useMonthlyListeningOnYear = (year: number) => {
+export const useListeningBreakdownOnYear = (year: number) => {
   const [yearlyListening, setYearlyListening] = useState<number[]>(
     Array(12).fill(0),
   );
@@ -24,12 +24,16 @@ export const useMonthlyListeningOnYear = (year: number) => {
       filteredTracks.forEach((track) => {
         const trackStart = new Date(track.timestamp);
         const month = trackStart.getUTCMonth();
-        const durationInSeconds = Math.floor(track.duration / 1000);
+        const durationInMilliseconds = track.duration;
 
-        yearlyAccumulator[month] += durationInSeconds;
+        yearlyAccumulator[month] += durationInMilliseconds;
       });
 
-      setYearlyListening(yearlyAccumulator);
+      const yearlyListeningInSeconds = yearlyAccumulator.map((ms) =>
+        Math.floor(ms / 1000),
+      );
+
+      setYearlyListening(yearlyListeningInSeconds);
       setIsLoading(false);
     };
 

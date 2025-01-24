@@ -9,21 +9,52 @@ import {
   Bar,
 } from "recharts";
 
+import { secondsToString } from "@/utils/time-processing";
+
 interface BreakdownBarChartProps {
   data: Array<{
-    hour: string;
+    label: string;
     duration: number;
   }>;
+  xAxisLabel: string;
+  yAxisLabel: string;
+  xTicks?: string[];
 }
 
-export default function BreakdownBarChart({ data }: BreakdownBarChartProps) {
+export default function BreakdownBarChart({
+  data,
+  xAxisLabel,
+  yAxisLabel,
+  xTicks,
+}: BreakdownBarChartProps) {
   const { theme } = useTheme();
+
+  const getYAxisUnit = (
+    data: Array<{
+      label: string;
+      duration: number;
+    }>,
+  ) => {
+    if (data.length === 24) return { unit: "minutes", divisor: 60 };
+    if (data.length === 7) return { unit: "hours", divisor: 3600 };
+    if (data.length === 12) return { unit: "days", divisor: 86400 };
+
+    return { unit: "hours", divisor: 3600 };
+  };
+
+  const { unit, divisor } = getYAxisUnit(data);
+
+  const finalData = data.map((item) => ({
+    label: item.label,
+    rawDuration: item.duration,
+    duration: item.duration / divisor,
+  }));
 
   return (
     <div className="w-full h-[350px]">
       <ResponsiveContainer>
         <BarChart
-          data={data}
+          data={finalData}
           margin={{
             top: 5,
             right: 15,
@@ -38,32 +69,42 @@ export default function BreakdownBarChart({ data }: BreakdownBarChartProps) {
             vertical={false}
           />
           <XAxis
-            dataKey="hour"
+            angle={data.length === 7 || data.length === 12 ? -45 : 0}
+            dataKey="label"
+            interval={0}
             label={{
-              value: "Hour",
+              value: xAxisLabel,
               position: "insideBottom",
               dx: 15,
               dy: 15,
               fill: theme === "dark" ? "#C5E4F6" : "#7A2528", // bg-primary-100
+              style: { fontWeight: "bold" },
             }}
             tick={{
               fill: theme === "dark" ? "#C5E4F6" : "#7A2528", // bg-primary-100
+              textAnchor:
+                data.length === 7 || data.length === 12 ? "end" : "middle",
+              style:
+                data.length === 7 || data.length === 12
+                  ? { fontSize: "8px" }
+                  : { fontSize: "16px" },
             }}
-            ticks={["0:00", "6:00", "12:00", "18:00"]}
+            ticks={xTicks}
           />
+
           <YAxis
             label={{
-              value: "Duration (min)",
+              value: `${yAxisLabel} (${unit})`,
               angle: -90,
               position: "top",
               offset: -155,
               dx: -10,
               fill: theme === "dark" ? "#C5E4F6" : "#7A2528", // bg-primary-100
+              style: { fontWeight: "bold" },
             }}
             tick={{
               fill: theme === "dark" ? "#C5E4F6" : "#7A2528", // bg-primary-100
             }}
-            ticks={["15", "30", "45", "60"]}
           />
           <Tooltip
             contentStyle={{
@@ -75,11 +116,13 @@ export default function BreakdownBarChart({ data }: BreakdownBarChartProps) {
               fill: theme === "dark" ? "#4C0336" : "#FFE4E2", // bg-danger-900
               opacity: 0.99,
             }}
-            formatter={(value: number, name: string) => {
-              const minutes = Math.floor(value);
-              const seconds = Math.round((value - minutes) * 60);
+            formatter={(_, name: string, props: any) => {
+              const capitalize = (str: string) =>
+                str.charAt(0).toUpperCase() + str.slice(1);
 
-              return [`${minutes} min ${seconds} s`, name];
+              const rawDuration = props.payload?.rawDuration || 0;
+
+              return [secondsToString(rawDuration), capitalize(name)];
             }}
           />
           <Bar

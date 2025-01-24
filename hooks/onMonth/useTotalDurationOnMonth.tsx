@@ -3,7 +3,7 @@ import { useState, useEffect } from "react";
 import { Track } from "@/types/music";
 
 export const useTotalDurationOnMonth = (year: number, month: number) => {
-  const [totalDuration, setTotalDuration] = useState<string>("0w0d0h0m0s");
+  const [totalDuration, setTotalDuration] = useState<number>(0);
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
@@ -26,13 +26,8 @@ export const useTotalDurationOnMonth = (year: number, month: number) => {
       );
 
       const totalSeconds = Math.floor(totalDurationMs / 1000);
-      const weeks = Math.floor(totalSeconds / (7 * 24 * 3600));
-      const days = Math.floor((totalSeconds % (7 * 24 * 3600)) / (24 * 3600));
-      const hours = Math.floor((totalSeconds % (24 * 3600)) / 3600);
-      const minutes = Math.floor((totalSeconds % 3600) / 60);
-      const seconds = totalSeconds % 60;
 
-      setTotalDuration(`${weeks}w${days}d${hours}h${minutes}m${seconds}s`);
+      setTotalDuration(totalSeconds);
       setIsLoading(false);
     };
 

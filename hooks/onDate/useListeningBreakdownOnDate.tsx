@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 
 import { Track } from "@/types/music";
 
-export const useHourlyListeningOnDate = (date: string) => {
+export const useListeningBreakdownOnDate = (date: string) => {
   const [hourlyListening, setHourlyListening] = useState<number[]>(
     Array(24).fill(0),
   );
@@ -20,17 +20,21 @@ export const useHourlyListeningOnDate = (date: string) => {
         return localDate === date;
       });
 
-      const hourlyListeningAccumulator = Array(24).fill(0);
+      const hourlyAccumulator = Array(24).fill(0);
 
       filteredTracks.forEach((track) => {
         const trackStart = new Date(track.timestamp);
         const localHour = trackStart.getHours();
-        const durationInSeconds = Math.floor(track.duration / 1000);
+        const durationInMilliseconds = track.duration;
 
-        hourlyListeningAccumulator[localHour] += durationInSeconds;
+        hourlyAccumulator[localHour] += durationInMilliseconds;
       });
 
-      setHourlyListening(hourlyListeningAccumulator);
+      const hourlyListeningInSeconds = hourlyAccumulator.map((ms) =>
+        Math.floor(ms / 1000),
+      );
+
+      setHourlyListening(hourlyListeningInSeconds);
       setIsLoading(false);
     };
 

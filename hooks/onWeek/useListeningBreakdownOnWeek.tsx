@@ -2,8 +2,10 @@ import { useState, useEffect } from "react";
 
 import { Track } from "@/types/music";
 
-export const useArtistsOnWeek = (date: string) => {
-  const [artistCount, setArtistCount] = useState<number>(0);
+export const useListeningBreakdownOnWeek = (date: string) => {
+  const [weeklyListening, setWeeklyListening] = useState<number[]>(
+    Array(7).fill(0),
+  );
   const [isLoading, setIsLoading] = useState(true);
 
   const getWeekStartAndEndDates = (date: string) => {
@@ -16,6 +18,7 @@ export const useArtistsOnWeek = (date: string) => {
     monday.setUTCDate(
       givenDate.getUTCDate() - (dayOfWeek === 0 ? 6 : dayOfWeek - 1),
     );
+    monday.setUTCHours(0, 0, 0, 0);
 
     const sunday = new Date(monday);
 
@@ -26,7 +29,7 @@ export const useArtistsOnWeek = (date: string) => {
   };
 
   useEffect(() => {
-    const fetchArtistsOnWeek = async () => {
+    const fetchWeeklyListening = async () => {
       const response = await fetch("./data/spotify_data.json");
       const data: Track[] = await response.json();
 
@@ -38,19 +41,32 @@ export const useArtistsOnWeek = (date: string) => {
         return trackDate >= weekStart && trackDate <= weekEnd;
       });
 
-      const uniqueArtists = new Set(
-        filteredTracks.map((track) => track.artist_name),
+      const dailyAccumulator = Array(7).fill(0);
+
+      // Accumulate durations by day
+      filteredTracks.forEach((track) => {
+        const trackStart = new Date(track.timestamp);
+
+        const dayOfWeek =
+          trackStart.getUTCDay() === 0 ? 6 : trackStart.getUTCDay() - 1;
+        const durationInMilliseconds = track.duration;
+
+        dailyAccumulator[dayOfWeek] += durationInMilliseconds;
+      });
+
+      const weeklyListeningInSeconds = dailyAccumulator.map((ms) =>
+        Math.floor(ms / 1000),
       );
 
-      setArtistCount(uniqueArtists.size);
+      setWeeklyListening(weeklyListeningInSeconds);
       setIsLoading(false);
     };
 
-    fetchArtistsOnWeek();
+    fetchWeeklyListening();
   }, [date]);
 
   return {
-    artistCount,
+    weeklyListening,
     isLoading,
   };
 };

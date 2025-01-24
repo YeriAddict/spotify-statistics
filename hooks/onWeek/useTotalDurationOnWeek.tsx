@@ -2,23 +2,27 @@ import { useState, useEffect } from "react";
 
 import { Track } from "@/types/music";
 
-export const useTotalDurationOnWeek = (year: number, week: number) => {
-  const [totalDuration, setTotalDuration] = useState<string>("0w0d0h0m0s");
+export const useTotalDurationOnWeek = (date: string) => {
+  const [totalDuration, setTotalDuration] = useState<number>(0);
   const [isLoading, setIsLoading] = useState(true);
 
-  const getWeekStartAndEndDates = (year: number, week: number) => {
-    const firstDayOfYear = new Date(Date.UTC(year, 0, 1));
-    const daysToAdd = (week - 1) * 7 - firstDayOfYear.getUTCDay() + 1;
+  const getWeekStartAndEndDates = (date: string) => {
+    const givenDate = new Date(date);
 
-    const weekStart = new Date(firstDayOfYear);
+    const dayOfWeek = givenDate.getUTCDay();
 
-    weekStart.setUTCDate(firstDayOfYear.getUTCDate() + daysToAdd);
+    const monday = new Date(givenDate);
 
-    const weekEnd = new Date(weekStart);
+    monday.setUTCDate(
+      givenDate.getUTCDate() - (dayOfWeek === 0 ? 6 : dayOfWeek - 1),
+    );
 
-    weekEnd.setUTCDate(weekStart.getUTCDate() + 6);
+    const sunday = new Date(monday);
 
-    return { weekStart, weekEnd };
+    sunday.setUTCDate(monday.getUTCDate() + 6);
+    sunday.setUTCHours(23, 59, 59, 999);
+
+    return { weekStart: monday, weekEnd: sunday };
   };
 
   useEffect(() => {
@@ -26,7 +30,7 @@ export const useTotalDurationOnWeek = (year: number, week: number) => {
       const response = await fetch("./data/spotify_data.json");
       const data: Track[] = await response.json();
 
-      const { weekStart, weekEnd } = getWeekStartAndEndDates(year, week);
+      const { weekStart, weekEnd } = getWeekStartAndEndDates(date);
 
       const filteredTracks = data.filter((track) => {
         const trackDate = new Date(track.timestamp);
@@ -40,17 +44,13 @@ export const useTotalDurationOnWeek = (year: number, week: number) => {
       );
 
       const totalSeconds = Math.floor(totalDurationMs / 1000);
-      const days = Math.floor(totalSeconds / (24 * 3600));
-      const hours = Math.floor((totalSeconds % (24 * 3600)) / 3600);
-      const minutes = Math.floor((totalSeconds % 3600) / 60);
-      const seconds = totalSeconds % 60;
 
-      setTotalDuration(`${week}w${days}d${hours}h${minutes}m${seconds}s`);
+      setTotalDuration(totalSeconds);
       setIsLoading(false);
     };
 
     fetchTotalDurationOnWeek();
-  }, [year, week]);
+  }, [date]);
 
   return {
     totalDuration,

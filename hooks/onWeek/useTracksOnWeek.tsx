@@ -1,24 +1,28 @@
-import { useEffect, useState } from "react";
+import { useState, useEffect } from "react";
 
 import { Track } from "@/types/music";
 
-export const useTracksOnWeek = (year: number, week: number) => {
+export const useTracksOnWeek = (date: string) => {
   const [trackCount, setTrackCount] = useState<number>(0);
   const [isLoading, setIsLoading] = useState(true);
 
-  const getWeekStartAndEndDates = (year: number, week: number) => {
-    const firstDayOfYear = new Date(Date.UTC(year, 0, 1));
-    const daysToAdd = (week - 1) * 7 - firstDayOfYear.getUTCDay() + 1;
+  const getWeekStartAndEndDates = (date: string) => {
+    const givenDate = new Date(date);
 
-    const weekStart = new Date(firstDayOfYear);
+    const dayOfWeek = givenDate.getUTCDay();
 
-    weekStart.setUTCDate(firstDayOfYear.getUTCDate() + daysToAdd);
+    const monday = new Date(givenDate);
 
-    const weekEnd = new Date(weekStart);
+    monday.setUTCDate(
+      givenDate.getUTCDate() - (dayOfWeek === 0 ? 6 : dayOfWeek - 1),
+    );
 
-    weekEnd.setUTCDate(weekStart.getUTCDate() + 6);
+    const sunday = new Date(monday);
 
-    return { weekStart, weekEnd };
+    sunday.setUTCDate(monday.getUTCDate() + 6);
+    sunday.setUTCHours(23, 59, 59, 999);
+
+    return { weekStart: monday, weekEnd: sunday };
   };
 
   useEffect(() => {
@@ -26,7 +30,7 @@ export const useTracksOnWeek = (year: number, week: number) => {
       const response = await fetch("./data/spotify_data.json");
       const data: Track[] = await response.json();
 
-      const { weekStart, weekEnd } = getWeekStartAndEndDates(year, week);
+      const { weekStart, weekEnd } = getWeekStartAndEndDates(date);
 
       const filteredTracks = data.filter((track) => {
         const trackDate = new Date(track.timestamp);
@@ -39,7 +43,7 @@ export const useTracksOnWeek = (year: number, week: number) => {
     };
 
     fetchTracksOnWeek();
-  }, [year, week]);
+  }, [date]);
 
   return {
     trackCount,

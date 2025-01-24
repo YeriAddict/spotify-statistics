@@ -2,26 +2,52 @@ import React from "react";
 import { Card, CardBody, CardHeader, Divider, Spinner } from "@heroui/react";
 import clsx from "clsx";
 
-import {
-  stringToSeconds,
-  formatDifferenceInTime,
-} from "@/utils/string-operations";
+import { secondsToString } from "@/utils/time-processing";
 
 interface StatCardProps {
   title: string;
-  currentValue: number | string;
-  previousValue: number | string;
+  currentValue: number;
+  previousValue: number;
+  isNumeric: boolean;
   isLoading: boolean;
+  selectedPeriod: string;
 }
 
 export function ActivityCountCard({
   title,
   currentValue,
   previousValue,
+  isNumeric,
   isLoading,
+  selectedPeriod,
 }: StatCardProps) {
-  const isNumeric =
-    typeof currentValue === "number" && typeof previousValue === "number";
+  const processSelectedPeriod = (period: string): string => {
+    if (period === "today") return "yesterday";
+
+    return period.replace(/_/g, " ");
+  };
+
+  const processedPeriod = processSelectedPeriod(selectedPeriod);
+
+  let differenceText: string;
+  let formattedValue: number | string;
+
+  if (isNumeric) {
+    formattedValue = Math.abs(previousValue - currentValue);
+
+    if (previousValue > currentValue) {
+      differenceText = `less than ${processedPeriod}`;
+    } else {
+      differenceText = `more than ${processedPeriod}`;
+    }
+  } else {
+    formattedValue = secondsToString(Math.abs(previousValue - currentValue));
+    if (previousValue > currentValue) {
+      differenceText = `less than ${processedPeriod}`;
+    } else {
+      differenceText = `more than ${processedPeriod}`;
+    }
+  }
 
   return (
     <Card className="flex-1 bg-primary-500 border-primary-400 border-2">
@@ -43,36 +69,23 @@ export function ActivityCountCard({
                   : "text-success-400",
               )}
             >
-              ({currentValue - previousValue > 0 ? "+" : ""}
-              {currentValue - previousValue}{" "}
-              {previousValue > currentValue
-                ? "less than yesterday"
-                : "more than yesterday"}
-              )
+              ({formattedValue} {differenceText})
             </p>
           </div>
         ) : (
           <div className="flex flex-row justify-between w-full">
-            <p className="text-left">{currentValue || "00h00m00s"}</p>
+            <p className="text-left">
+              {secondsToString(currentValue) || "00h00m00s"}
+            </p>
             <p
               className={clsx(
                 "text-right italic",
-                stringToSeconds(previousValue as string) >
-                  stringToSeconds(currentValue as string)
+                previousValue > currentValue
                   ? "text-danger-400"
                   : "text-success-400",
               )}
             >
-              (
-              {formatDifferenceInTime(
-                currentValue as string,
-                previousValue as string,
-              ) || "00h00m00s"}{" "}
-              {stringToSeconds(previousValue as string) >
-              stringToSeconds(currentValue as string)
-                ? "less than yesterday"
-                : "more than yesterday"}
-              )
+              ({formattedValue} {differenceText})
             </p>
           </div>
         )}

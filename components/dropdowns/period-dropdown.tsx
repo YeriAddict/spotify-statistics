@@ -16,9 +16,13 @@ interface DropdownItemProps {
 
 interface PeriodDropdownProps {
   items: DropdownItemProps[];
+  onSelectionChange?: (key: string) => void;
 }
 
-export default function PeriodDropdown({ items }: PeriodDropdownProps) {
+export default function PeriodDropdown({
+  items,
+  onSelectionChange,
+}: PeriodDropdownProps) {
   const [selectedKeys, setSelectedKeys] = React.useState(
     new Set([items[0]?.key || ""]),
   );
@@ -30,6 +34,15 @@ export default function PeriodDropdown({ items }: PeriodDropdownProps) {
       .map((key) => items.find((item) => item.key === key)?.label || "")
       .join(", ");
   }, [selectedKeys, items]);
+
+  const handleSelectionChange = (keys: any) => {
+    const key = keys.anchorKey || "";
+
+    setSelectedKeys(new Set(keys));
+    if (onSelectionChange) {
+      onSelectionChange(key);
+    }
+  };
 
   return (
     <Dropdown
@@ -52,9 +65,7 @@ export default function PeriodDropdown({ items }: PeriodDropdownProps) {
         selectedKeys={selectedKeys}
         selectionMode="single"
         variant="bordered"
-        onSelectionChange={(keys) =>
-          setSelectedKeys(new Set(keys as Set<string>))
-        }
+        onSelectionChange={handleSelectionChange}
       >
         {items.map((item) => (
           <DropdownItem key={item.key} className="hover:bg-primary-500">
