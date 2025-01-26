@@ -1,60 +1,26 @@
 import { useState, useEffect } from "react";
 
-import { Track, ArtistAggregate } from "@/types/music";
+import { ArtistAggregate } from "@/types/music";
+import { fetchArtistAggregatesOnMonth } from "@/services/fetchArtists";
 
 export const useTopArtistOnMonth = (year: number, month: number) => {
   const [topArtist, setTopArtist] = useState<ArtistAggregate | null>(null);
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    const fetchTopArtistOnMonth = async () => {
-      const response = await fetch("./data/spotify_data.json");
-      const data: Track[] = await response.json();
+    const run = async () => {
+      const aggregatedArtists = await fetchArtistAggregatesOnMonth(year, month);
+      const mostListenedArtist = aggregatedArtists[0] || null;
 
-      const filteredTracks = data.filter((track) => {
-        const trackDate = new Date(track.timestamp);
-
-        return (
-          trackDate.getUTCFullYear() === year &&
-          trackDate.getUTCMonth() + 1 === month
-        );
-      });
-
-      const aggregatedArtistsMap: Record<string, ArtistAggregate> =
-        filteredTracks.reduce(
-          (acc, track) => {
-            if (!acc[track.artist_name]) {
-              acc[track.artist_name] = {
-                artist_name: track.artist_name,
-                total_duration: 0,
-                rank: 0,
-              };
-            }
-            acc[track.artist_name].total_duration += track.duration;
-
-            return acc;
-          },
-          {} as Record<string, ArtistAggregate>,
-        );
-
-      const aggregatedArtists = Object.values(aggregatedArtistsMap).map(
-        (artist) => ({
-          ...artist,
-          total_duration: Math.floor(artist.total_duration / 1000),
-        }),
-      );
-
-      const topArtist =
-        aggregatedArtists.sort(
-          (a, b) => b.total_duration - a.total_duration,
-        )[0] || null;
-
-      setTopArtist(topArtist);
+      setTopArtist(mostListenedArtist);
       setIsLoading(false);
     };
 
-    fetchTopArtistOnMonth();
+    run();
   }, [year, month]);
 
-  return { topArtist, isLoading };
+  return {
+    topArtist,
+    isLoading,
+  };
 };

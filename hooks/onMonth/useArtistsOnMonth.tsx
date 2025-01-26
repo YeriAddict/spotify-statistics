@@ -1,24 +1,15 @@
 import { useState, useEffect } from "react";
 
 import { Track } from "@/types/music";
+import { fetchTracksOnMonth } from "@/services/fetchTracks";
 
 export const useArtistsOnMonth = (year: number, month: number) => {
   const [artistCount, setArtistCount] = useState<number>(0);
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    const fetchArtistsOnMonth = async () => {
-      const response = await fetch("./data/spotify_data.json");
-      const data: Track[] = await response.json();
-
-      const filteredTracks = data.filter((track) => {
-        const trackDate = new Date(track.timestamp);
-
-        return (
-          trackDate.getUTCFullYear() === year &&
-          trackDate.getUTCMonth() + 1 === month
-        );
-      });
+    const run = async () => {
+      const filteredTracks: Track[] = await fetchTracksOnMonth(year, month);
 
       const uniqueArtists = new Set(
         filteredTracks.map((track) => track.artist_name),
@@ -28,7 +19,7 @@ export const useArtistsOnMonth = (year: number, month: number) => {
       setIsLoading(false);
     };
 
-    fetchArtistsOnMonth();
+    run();
   }, [year, month]);
 
   return {

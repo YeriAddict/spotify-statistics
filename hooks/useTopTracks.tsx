@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 
 import { Track, TrackAggregate } from "@/types/music";
+import { fetchTracks } from "@/services/fetchTracks";
 
 export const useTopTracks = (pageSize = 10) => {
   const [tracks, setTracks] = useState<TrackAggregate[]>([]);
@@ -9,30 +10,30 @@ export const useTopTracks = (pageSize = 10) => {
   const [cursor, setCursor] = useState(0);
 
   useEffect(() => {
-    const fetchTracks = async () => {
-      const response = await fetch("./data/spotify_data.json");
-      const data: Track[] = await response.json();
+    const run = async () => {
+      const allTracks: Track[] = await fetchTracks();
 
-      const aggregatedTracksMap: Record<string, TrackAggregate> = data.reduce(
-        (acc, track) => {
-          const key = `${track.track_name}|${track.artist_name}|${track.album_name}`;
+      const aggregatedTracksMap: Record<string, TrackAggregate> =
+        allTracks.reduce(
+          (acc, track) => {
+            const key = `${track.track_name}|${track.artist_name}|${track.album_name}`;
 
-          if (!acc[key]) {
-            acc[key] = {
-              track_name: track.track_name,
-              artist_name: track.artist_name,
-              album_name: track.album_name,
-              spotify_track_uri: track.spotify_track_uri,
-              total_duration: 0,
-              rank: 0,
-            };
-          }
-          acc[key].total_duration += track.duration;
+            if (!acc[key]) {
+              acc[key] = {
+                track_name: track.track_name,
+                artist_name: track.artist_name,
+                album_name: track.album_name,
+                spotify_track_uri: track.spotify_track_uri,
+                total_duration: 0,
+                rank: 0,
+              };
+            }
+            acc[key].total_duration += track.duration;
 
-          return acc;
-        },
-        {} as Record<string, TrackAggregate>,
-      );
+            return acc;
+          },
+          {} as Record<string, TrackAggregate>,
+        );
 
       const aggregatedTracks = Object.values(aggregatedTracksMap)
         .sort((a, b) => b.total_duration - a.total_duration)
@@ -48,7 +49,7 @@ export const useTopTracks = (pageSize = 10) => {
       setIsLoading(false);
     };
 
-    fetchTracks();
+    run();
   }, [pageSize]);
 
   const loadMore = () => {

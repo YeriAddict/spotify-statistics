@@ -1,17 +1,17 @@
 import { useState, useEffect } from "react";
 
 import { Track } from "@/types/music";
+import { fetchTracks } from "@/services/fetchTracks";
 
 export const useListeningBreakdownOnMonth = (year: number, month: number) => {
   const [monthlyListening, setMonthlyListening] = useState<number[]>([]);
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    const fetchMonthlyListening = async () => {
-      const response = await fetch("./data/spotify_data.json");
-      const data: Track[] = await response.json();
+    const run = async () => {
+      const allTracks: Track[] = await fetchTracks();
 
-      const filteredTracks = data.filter((track) => {
+      const filteredTracks = allTracks.filter((track) => {
         const trackDate = new Date(track.timestamp);
 
         return (
@@ -40,7 +40,7 @@ export const useListeningBreakdownOnMonth = (year: number, month: number) => {
       setIsLoading(false);
     };
 
-    fetchMonthlyListening();
+    run();
   }, [year, month]);
 
   return {

@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 
 import { Track } from "@/types/music";
+import { fetchTracks } from "@/services/fetchTracks";
 
 export const useRecentTracks = (pageSize = 10) => {
   const [recentTracks, setRecentTracks] = useState<Track[]>([]);
@@ -9,11 +10,10 @@ export const useRecentTracks = (pageSize = 10) => {
   const [cursor, setCursor] = useState(0);
 
   useEffect(() => {
-    const fetchRecentTracks = async () => {
-      const response = await fetch("./data/spotify_data.json");
-      const data: Track[] = await response.json();
+    const run = async () => {
+      const allTracks: Track[] = await fetchTracks();
 
-      const sortedTracks = data.sort(
+      const sortedTracks = allTracks.sort(
         (a, b) =>
           new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime(),
       );
@@ -28,7 +28,7 @@ export const useRecentTracks = (pageSize = 10) => {
       setIsLoading(false);
     };
 
-    fetchRecentTracks();
+    run();
   }, [pageSize]);
 
   const loadMore = () => {

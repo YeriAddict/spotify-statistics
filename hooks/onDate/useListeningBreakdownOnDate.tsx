@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 
 import { Track } from "@/types/music";
+import { fetchTracks } from "@/services/fetchTracks";
 
 export const useListeningBreakdownOnDate = (date: string) => {
   const [hourlyListening, setHourlyListening] = useState<number[]>(
@@ -9,11 +10,10 @@ export const useListeningBreakdownOnDate = (date: string) => {
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    const fetchHourlyListeningOnDate = async () => {
-      const response = await fetch("./data/spotify_data.json");
-      const data: Track[] = await response.json();
+    const run = async () => {
+      const allTracks: Track[] = await fetchTracks();
 
-      const filteredTracks = data.filter((track) => {
+      const filteredTracks = allTracks.filter((track) => {
         const trackStart = new Date(track.timestamp);
         const localDate = trackStart.toLocaleDateString("en-CA");
 
@@ -38,7 +38,7 @@ export const useListeningBreakdownOnDate = (date: string) => {
       setIsLoading(false);
     };
 
-    fetchHourlyListeningOnDate();
+    run();
   }, [date]);
 
   return {

@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 
 import { Track } from "@/types/music";
+import { fetchTracks } from "@/services/fetchTracks";
 
 export const useListeningBreakdownOnWeek = (date: string) => {
   const [weeklyListening, setWeeklyListening] = useState<number[]>(
@@ -29,13 +30,12 @@ export const useListeningBreakdownOnWeek = (date: string) => {
   };
 
   useEffect(() => {
-    const fetchWeeklyListening = async () => {
-      const response = await fetch("./data/spotify_data.json");
-      const data: Track[] = await response.json();
+    const run = async () => {
+      const allTracks: Track[] = await fetchTracks();
 
       const { weekStart, weekEnd } = getWeekStartAndEndDates(date);
 
-      const filteredTracks = data.filter((track) => {
+      const filteredTracks = allTracks.filter((track) => {
         const trackDate = new Date(track.timestamp);
 
         return trackDate >= weekStart && trackDate <= weekEnd;
@@ -43,7 +43,6 @@ export const useListeningBreakdownOnWeek = (date: string) => {
 
       const dailyAccumulator = Array(7).fill(0);
 
-      // Accumulate durations by day
       filteredTracks.forEach((track) => {
         const trackStart = new Date(track.timestamp);
 
@@ -62,7 +61,7 @@ export const useListeningBreakdownOnWeek = (date: string) => {
       setIsLoading(false);
     };
 
-    fetchWeeklyListening();
+    run();
   }, [date]);
 
   return {

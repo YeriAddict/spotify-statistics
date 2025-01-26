@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 
-import { Track, ArtistAggregate } from "@/types/music";
+import { ArtistAggregate } from "@/types/music";
+import { fetchArtistAggregatesOnMonth } from "@/services/fetchArtists";
 
 export const useTopArtistsOnMonth = (
   year: number,
@@ -13,53 +14,15 @@ export const useTopArtistsOnMonth = (
   const [cursor, setCursor] = useState(0);
 
   useEffect(() => {
-    const fetchTopArtistsOnMonth = async () => {
-      setIsLoading(true);
-
-      const response = await fetch("./data/spotify_data.json");
-      const data: Track[] = await response.json();
-
-      const filteredTracks = data.filter((track) => {
-        const trackDate = new Date(track.timestamp);
-
-        return (
-          trackDate.getUTCFullYear() === year &&
-          trackDate.getUTCMonth() + 1 === month
-        );
-      });
-
-      const aggregatedArtistsMap: Record<string, ArtistAggregate> =
-        filteredTracks.reduce(
-          (acc, track) => {
-            if (!acc[track.artist_name]) {
-              acc[track.artist_name] = {
-                artist_name: track.artist_name,
-                total_duration: 0,
-                rank: 0,
-              };
-            }
-            acc[track.artist_name].total_duration += track.duration;
-
-            return acc;
-          },
-          {} as Record<string, ArtistAggregate>,
-        );
-
-      const aggregatedArtists = Object.values(aggregatedArtistsMap)
-        .sort((a, b) => b.total_duration - a.total_duration)
-        .map((artist, index) => ({
-          ...artist,
-          rank: index + 1,
-          total_duration: Math.floor(artist.total_duration / 1000),
-        }))
-        .slice(0, 100);
+    const run = async () => {
+      const aggregatedArtists = await fetchArtistAggregatesOnMonth(year, month);
 
       setArtists(aggregatedArtists);
       setHasMore(aggregatedArtists.length > pageSize);
       setIsLoading(false);
     };
 
-    fetchTopArtistsOnMonth();
+    run();
   }, [year, month, pageSize]);
 
   const loadMore = () => {

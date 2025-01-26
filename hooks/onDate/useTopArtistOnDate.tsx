@@ -1,57 +1,26 @@
 import { useState, useEffect } from "react";
 
-import { Track, ArtistAggregate } from "@/types/music";
+import { ArtistAggregate } from "@/types/music";
+import { fetchArtistAggregatesOnDate } from "@/services/fetchArtists";
 
 export const useTopArtistOnDate = (date: string) => {
   const [topArtist, setTopArtist] = useState<ArtistAggregate | null>(null);
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    const fetchTopArtist = async () => {
-      const response = await fetch("./data/spotify_data.json");
-      const data: Track[] = await response.json();
+    const run = async () => {
+      const aggregatedArtists = await fetchArtistAggregatesOnDate(date);
+      const mostListenedTrack = aggregatedArtists[0] || null;
 
-      const filteredTracks = data.filter((track) => {
-        const trackDate = new Date(track.timestamp).toISOString().split("T")[0];
-
-        return trackDate === date;
-      });
-
-      const aggregatedArtistsMap: Record<string, ArtistAggregate> =
-        filteredTracks.reduce(
-          (acc, track) => {
-            if (!acc[track.artist_name]) {
-              acc[track.artist_name] = {
-                artist_name: track.artist_name,
-                total_duration: 0,
-                rank: 0,
-              };
-            }
-            acc[track.artist_name].total_duration += track.duration;
-
-            return acc;
-          },
-          {} as Record<string, ArtistAggregate>,
-        );
-
-      const aggregatedArtists = Object.values(aggregatedArtistsMap).map(
-        (artist) => ({
-          ...artist,
-          total_duration: Math.floor(artist.total_duration / 1000),
-        }),
-      );
-
-      const topArtist =
-        aggregatedArtists.sort(
-          (a, b) => b.total_duration - a.total_duration,
-        )[0] || null;
-
-      setTopArtist(topArtist);
+      setTopArtist(mostListenedTrack);
       setIsLoading(false);
     };
 
-    fetchTopArtist();
+    run();
   }, [date]);
 
-  return { topArtist, isLoading };
+  return {
+    topArtist,
+    isLoading,
+  };
 };

@@ -1,27 +1,20 @@
 import { useEffect, useState } from "react";
 
-import { Track } from "@/types/music";
+import { fetchTracksOnYear } from "@/services/fetchTracks";
 
 export const useTracksOnYear = (year: number) => {
   const [trackCount, setTrackCount] = useState<number>(0);
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    const fetchTracksOnYear = async () => {
-      const response = await fetch("./data/spotify_data.json");
-      const data: Track[] = await response.json();
-
-      const filteredTracks = data.filter((track) => {
-        const trackDate = new Date(track.timestamp);
-
-        return trackDate.getUTCFullYear() === year;
-      });
+    const run = async () => {
+      const filteredTracks = await fetchTracksOnYear(year);
 
       setTrackCount(filteredTracks.length);
       setIsLoading(false);
     };
 
-    fetchTracksOnYear();
+    run();
   }, [year]);
 
   return {

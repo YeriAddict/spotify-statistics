@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 
-import { Track, TrackAggregate } from "@/types/music";
+import { TrackAggregate } from "@/types/music";
+import { fetchTrackAggregatesOnYear } from "@/services/fetchTracks";
 
 export const useTopTracksOnYear = (year: number, pageSize = 10) => {
   const [tracks, setTracks] = useState<TrackAggregate[]>([]);
@@ -9,55 +10,15 @@ export const useTopTracksOnYear = (year: number, pageSize = 10) => {
   const [cursor, setCursor] = useState(0);
 
   useEffect(() => {
-    const fetchTopTracksOnYear = async () => {
-      setIsLoading(true);
-
-      const response = await fetch("./data/spotify_data.json");
-      const data: Track[] = await response.json();
-
-      const filteredTracks = data.filter((track) => {
-        const trackDate = new Date(track.timestamp);
-
-        return trackDate.getUTCFullYear() === year;
-      });
-
-      const aggregatedTracksMap: Record<string, TrackAggregate> =
-        filteredTracks.reduce(
-          (acc, track) => {
-            const key = `${track.track_name}|${track.artist_name}|${track.album_name}`;
-
-            if (!acc[key]) {
-              acc[key] = {
-                track_name: track.track_name,
-                artist_name: track.artist_name,
-                album_name: track.album_name,
-                spotify_track_uri: track.spotify_track_uri,
-                total_duration: 0,
-                rank: 0,
-              };
-            }
-            acc[key].total_duration += track.duration;
-
-            return acc;
-          },
-          {} as Record<string, TrackAggregate>,
-        );
-
-      const aggregatedTracks = Object.values(aggregatedTracksMap)
-        .sort((a, b) => b.total_duration - a.total_duration)
-        .map((track, index) => ({
-          ...track,
-          rank: index + 1,
-          total_duration: Math.floor(track.total_duration / 1000),
-        }))
-        .slice(0, 100);
+    const run = async () => {
+      const aggregatedTracks = await fetchTrackAggregatesOnYear(year);
 
       setTracks(aggregatedTracks);
       setHasMore(aggregatedTracks.length > pageSize);
       setIsLoading(false);
     };
 
-    fetchTopTracksOnYear();
+    run();
   }, [year, pageSize]);
 
   const loadMore = () => {
