@@ -6,12 +6,14 @@ import { useState } from "react";
 import PeriodDropdown from "../dropdowns/period-dropdown";
 import { RecordTable } from "../tables/record-table";
 
-import { useTopAlbums } from "@/hooks/useTopAlbums";
-import { useTopAlbumsOnDate } from "@/hooks/onDate/useTopAlbumsOnDate";
-import { useTopAlbumsOnWeek } from "@/hooks/onWeek/useTopAlbumsOnWeek";
-import { useTopAlbumsOnMonth } from "@/hooks/onMonth/useTopAlbumsOnMonth";
-import { useTopAlbumsOnYear } from "@/hooks/onYear/useTopAlbumsOnYear";
 import { secondsToString } from "@/utils/time-processing";
+import {
+  useTopAlbumsOnDate,
+  useTopAlbumsOnLifetime,
+  useTopAlbumsOnMonth,
+  useTopAlbumsOnWeek,
+  useTopAlbumsOnYear,
+} from "@/hooks/useTopAlbums";
 
 export default function TopAlbumsPageComponent() {
   const dropdownItems = [
@@ -36,31 +38,31 @@ export default function TopAlbumsPageComponent() {
     isLoading: todayLoading,
     hasMore: todayHasMore,
     loadMore: loadMoreToday,
-  } = useTopAlbumsOnDate("2024-11-25", 10);
+  } = useTopAlbumsOnDate("2024-11-25", 10, selectedPeriod === "today");
   const {
     albums: weekAlbums,
     isLoading: weekLoading,
     hasMore: weekHasMore,
     loadMore: loadMoreWeek,
-  } = useTopAlbumsOnWeek("2024-11-25", 10);
+  } = useTopAlbumsOnWeek("2024-11-25", 10, selectedPeriod === "this_week");
   const {
     albums: monthAlbums,
     isLoading: monthLoading,
     hasMore: monthHasMore,
     loadMore: loadMoreMonth,
-  } = useTopAlbumsOnMonth(2024, 11, 10);
+  } = useTopAlbumsOnMonth(2024, 11, 10, selectedPeriod === "this_month");
   const {
     albums: yearAlbums,
     isLoading: yearLoading,
     hasMore: yearHasMore,
     loadMore: loadMoreYear,
-  } = useTopAlbumsOnYear(2024, 10);
+  } = useTopAlbumsOnYear(2024, 10, selectedPeriod === "this_year");
   const {
     albums: allTimeAlbums,
     isLoading: allTimeLoading,
     hasMore: allTimeHasMore,
     loadMore: loadMoreAllTime,
-  } = useTopAlbums(10);
+  } = useTopAlbumsOnLifetime(10, selectedPeriod === "all_time");
 
   const periodDataMap = {
     today: {

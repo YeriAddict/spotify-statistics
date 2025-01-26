@@ -217,3 +217,38 @@ export async function fetchTrackAggregatesOnYear(
       total_duration: Math.floor(track.total_duration / 1000),
     }));
 }
+
+export async function fetchTrackAggregatesOnLifetime(): Promise<
+  TrackAggregate[]
+> {
+  const allTracks: Track[] = await fetchTracks();
+
+  const aggregatedTracksMap: Record<string, TrackAggregate> = allTracks.reduce(
+    (acc, track) => {
+      const key = `${track.track_name}|${track.artist_name}|${track.album_name}`;
+
+      if (!acc[key]) {
+        acc[key] = {
+          track_name: track.track_name,
+          artist_name: track.artist_name,
+          album_name: track.album_name,
+          spotify_track_uri: track.spotify_track_uri,
+          total_duration: 0,
+          rank: 0,
+        };
+      }
+      acc[key].total_duration += track.duration;
+
+      return acc;
+    },
+    {} as Record<string, TrackAggregate>,
+  );
+
+  return Object.values(aggregatedTracksMap)
+    .sort((a, b) => b.total_duration - a.total_duration)
+    .map((track, index) => ({
+      ...track,
+      rank: index + 1,
+      total_duration: Math.floor(track.total_duration / 1000),
+    }));
+}

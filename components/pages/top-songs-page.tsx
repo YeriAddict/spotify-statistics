@@ -6,12 +6,14 @@ import { useState } from "react";
 import PeriodDropdown from "../dropdowns/period-dropdown";
 import { RecordTable } from "../tables/record-table";
 
-import { useTopTracks } from "@/hooks/useTopTracks";
+import {
+  useTopTracksOnDate,
+  useTopTracksOnLifetime,
+  useTopTracksOnMonth,
+  useTopTracksOnWeek,
+  useTopTracksOnYear,
+} from "@/hooks/useTopTracks";
 import { secondsToString } from "@/utils/time-processing";
-import { useTopTracksOnDate } from "@/hooks/onDate/useTopTracksOnDate";
-import { useTopTracksOnWeek } from "@/hooks/onWeek/useTopTracksOnWeek";
-import { useTopTracksOnMonth } from "@/hooks/onMonth/useTopTracksOnMonth";
-import { useTopTracksOnYear } from "@/hooks/onYear/useTopTracksOnYear";
 
 export default function TopSongsPageComponent() {
   const dropdownItems = [
@@ -36,31 +38,31 @@ export default function TopSongsPageComponent() {
     isLoading: todayLoading,
     hasMore: todayHasMore,
     loadMore: loadMoreToday,
-  } = useTopTracksOnDate("2024-11-25", 10);
+  } = useTopTracksOnDate("2024-11-25", 10, selectedPeriod === "today");
   const {
     tracks: weekTracks,
     isLoading: weekLoading,
     hasMore: weekHasMore,
     loadMore: loadMoreWeek,
-  } = useTopTracksOnWeek("2024-11-25", 10);
+  } = useTopTracksOnWeek("2024-11-25", 10, selectedPeriod === "this_week");
   const {
     tracks: monthTracks,
     isLoading: monthLoading,
     hasMore: monthHasMore,
     loadMore: loadMoreMonth,
-  } = useTopTracksOnMonth(2024, 11, 10);
+  } = useTopTracksOnMonth(2024, 11, 10, selectedPeriod === "this_month");
   const {
     tracks: yearTracks,
     isLoading: yearLoading,
     hasMore: yearHasMore,
     loadMore: loadMoreYear,
-  } = useTopTracksOnYear(2024, 10);
+  } = useTopTracksOnYear(2024, 10, selectedPeriod === "this_year");
   const {
     tracks: allTimeTracks,
     isLoading: allTimeLoading,
     hasMore: allTimeHasMore,
     loadMore: loadMoreAllTime,
-  } = useTopTracks(10);
+  } = useTopTracksOnLifetime(10, selectedPeriod === "all_time");
 
   const periodDataMap = {
     today: {

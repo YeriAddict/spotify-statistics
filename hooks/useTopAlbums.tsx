@@ -1,66 +1,117 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
+import { useQuery } from "@tanstack/react-query";
 
-import { Track, AlbumAggregate } from "@/types/music";
-import { fetchTracks } from "@/services/fetchTracks";
+import { AlbumAggregate } from "@/types/music";
+import {
+  fetchAlbumAggregatesOnDate,
+  fetchAlbumAggregatesOnWeek,
+  fetchAlbumAggregatesOnMonth,
+  fetchAlbumAggregatesOnYear,
+  fetchAlbumAggregatesOnLifetime,
+} from "@/services/fetchAlbums";
 
-export const useTopAlbums = (pageSize = 10) => {
-  const [albums, setAlbums] = useState<AlbumAggregate[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
-  const [hasMore, setHasMore] = useState(false);
+function useTopAlbums(
+  queryKey: (string | number)[],
+  fetchFunction: (...args: any[]) => Promise<AlbumAggregate[]>,
+  fetchArgs: any[],
+  pageSize = 10,
+  enabled = true,
+) {
+  const {
+    data = [],
+    isLoading,
+    isError,
+    error,
+  } = useQuery({
+    queryKey,
+    queryFn: () => fetchFunction(...fetchArgs),
+    enabled,
+  });
   const [cursor, setCursor] = useState(0);
 
-  useEffect(() => {
-    const run = async () => {
-      const allTracks: Track[] = await fetchTracks();
-
-      const aggregatedAlbumsMap: Record<string, AlbumAggregate> =
-        allTracks.reduce(
-          (acc, track) => {
-            const key = `${track.artist_name}-${track.album_name}`;
-
-            if (!acc[key]) {
-              acc[key] = {
-                album_name: track.album_name,
-                artist_name: track.artist_name,
-                total_duration: 0,
-                rank: 0,
-              };
-            }
-            acc[key].total_duration += track.duration;
-
-            return acc;
-          },
-          {} as Record<string, AlbumAggregate>,
-        );
-
-      const aggregatedAlbums = Object.values(aggregatedAlbumsMap)
-        .sort((a, b) => b.total_duration - a.total_duration)
-        .map((album, index) => ({
-          ...album,
-          rank: index + 1,
-          total_duration: Math.floor(album.total_duration / 1000),
-        }))
-        .slice(0, 100);
-
-      setAlbums(aggregatedAlbums);
-      setHasMore(aggregatedAlbums.length > pageSize);
-      setIsLoading(false);
-    };
-
-    run();
-  }, [pageSize]);
+  const hasMore = cursor + pageSize < data.length;
 
   const loadMore = () => {
-    if (!hasMore) return;
-
-    setCursor((prevCursor) => prevCursor + pageSize);
-    setHasMore(cursor + pageSize < albums.length);
+    if (hasMore) {
+      setCursor((prev) => prev + pageSize);
+    }
   };
 
+  const albums = data.slice(0, cursor + pageSize);
+
   return {
-    albums: albums.slice(0, cursor + pageSize),
+    albums,
     isLoading,
+    isError,
+    error,
     hasMore,
     loadMore,
   };
-};
+}
+
+export function useTopAlbumsOnDate(
+  date: string,
+  pageSize = 10,
+  enabled = true,
+) {
+  return useTopAlbums(
+    ["topAlbumsOnDate", date],
+    fetchAlbumAggregatesOnDate,
+    [date],
+    pageSize,
+    enabled,
+  );
+}
+
+export function useTopAlbumsOnWeek(
+  date: string,
+  pageSize = 10,
+  enabled = true,
+) {
+  return useTopAlbums(
+    ["topAlbumsOnWeek", date],
+    fetchAlbumAggregatesOnWeek,
+    [date],
+    pageSize,
+    enabled,
+  );
+}
+
+export function useTopAlbumsOnMonth(
+  year: number,
+  month: number,
+  pageSize = 10,
+  enabled = true,
+) {
+  return useTopAlbums(
+    ["topAlbumsOnMonth", year, month],
+    fetchAlbumAggregatesOnMonth,
+    [year, month],
+    pageSize,
+    enabled,
+  );
+}
+
+export function useTopAlbumsOnYear(
+  year: number,
+  pageSize = 10,
+  enabled = true,
+) {
+  return useTopAlbums(
+    ["topAlbumsOnYear", year],
+    fetchAlbumAggregatesOnYear,
+    [year],
+    pageSize,
+    enabled,
+  );
+}
+
+export function useTopAlbumsOnLifetime(pageSize = 10, enabled = true) {
+  return useTopAlbums(
+    ["topAlbumsOnLifetime"],
+    fetchAlbumAggregatesOnLifetime,
+    [],
+    pageSize,
+    enabled,
+  );
+}

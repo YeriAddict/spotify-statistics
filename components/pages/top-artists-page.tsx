@@ -6,12 +6,14 @@ import { useState } from "react";
 import PeriodDropdown from "../dropdowns/period-dropdown";
 import { RecordTable } from "../tables/record-table";
 
-import { useTopArtists } from "@/hooks/useTopArtists";
+import {
+  useTopArtistsOnDate,
+  useTopArtistsOnLifetime,
+  useTopArtistsOnMonth,
+  useTopArtistsOnWeek,
+  useTopArtistsOnYear,
+} from "@/hooks/useTopArtists";
 import { secondsToString } from "@/utils/time-processing";
-import { useTopArtistsOnDate } from "@/hooks/onDate/useTopArtistsOnDate";
-import { useTopArtistsOnWeek } from "@/hooks/onWeek/useTopArtistsOnWeek";
-import { useTopArtistsOnMonth } from "@/hooks/onMonth/useTopArtistsOnMonth";
-import { useTopArtistsOnYear } from "@/hooks/onYear/useTopArtistsOnYear";
 
 export default function TopArtistsPageComponent() {
   const dropdownItems = [
@@ -35,31 +37,31 @@ export default function TopArtistsPageComponent() {
     isLoading: todayLoading,
     hasMore: todayHasMore,
     loadMore: loadMoreToday,
-  } = useTopArtistsOnDate("2024-11-25", 10);
+  } = useTopArtistsOnDate("2024-11-25", 10, selectedPeriod === "today");
   const {
     artists: weekArtists,
     isLoading: weekLoading,
     hasMore: weekHasMore,
     loadMore: loadMoreWeek,
-  } = useTopArtistsOnWeek("2024-11-25", 10);
+  } = useTopArtistsOnWeek("2024-11-25", 10, selectedPeriod === "this_week");
   const {
     artists: monthArtists,
     isLoading: monthLoading,
     hasMore: monthHasMore,
     loadMore: loadMoreMonth,
-  } = useTopArtistsOnMonth(2024, 11, 10);
+  } = useTopArtistsOnMonth(2024, 11, 10, selectedPeriod === "this_month");
   const {
     artists: yearArtists,
     isLoading: yearLoading,
     hasMore: yearHasMore,
     loadMore: loadMoreYear,
-  } = useTopArtistsOnYear(2024, 10);
+  } = useTopArtistsOnYear(2024, 10, selectedPeriod === "this_year");
   const {
     artists: allTimeArtists,
     isLoading: allTimeLoading,
     hasMore: allTimeHasMore,
     loadMore: loadMoreAllTime,
-  } = useTopArtists(10);
+  } = useTopArtistsOnLifetime(10, selectedPeriod === "all_time");
 
   const periodDataMap = {
     today: {

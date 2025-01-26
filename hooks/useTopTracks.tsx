@@ -1,68 +1,117 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
+import { useQuery } from "@tanstack/react-query";
 
-import { Track, TrackAggregate } from "@/types/music";
-import { fetchTracks } from "@/services/fetchTracks";
+import {
+  fetchTrackAggregatesOnDate,
+  fetchTrackAggregatesOnWeek,
+  fetchTrackAggregatesOnMonth,
+  fetchTrackAggregatesOnYear,
+  fetchTrackAggregatesOnLifetime,
+} from "@/services/fetchTracks";
 
-export const useTopTracks = (pageSize = 10) => {
-  const [tracks, setTracks] = useState<TrackAggregate[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
-  const [hasMore, setHasMore] = useState(false);
+function useTopTracks(
+  queryKey: (string | number)[],
+  fetchFn: (...args: any[]) => Promise<any[]>,
+  fetchArgs: any[],
+  pageSize = 10,
+  enabled = true,
+) {
+  const {
+    data = [],
+    isLoading,
+    isError,
+    error,
+  } = useQuery({
+    queryKey,
+    queryFn: () => fetchFn(...fetchArgs),
+    enabled,
+  });
+
   const [cursor, setCursor] = useState(0);
 
-  useEffect(() => {
-    const run = async () => {
-      const allTracks: Track[] = await fetchTracks();
-
-      const aggregatedTracksMap: Record<string, TrackAggregate> =
-        allTracks.reduce(
-          (acc, track) => {
-            const key = `${track.track_name}|${track.artist_name}|${track.album_name}`;
-
-            if (!acc[key]) {
-              acc[key] = {
-                track_name: track.track_name,
-                artist_name: track.artist_name,
-                album_name: track.album_name,
-                spotify_track_uri: track.spotify_track_uri,
-                total_duration: 0,
-                rank: 0,
-              };
-            }
-            acc[key].total_duration += track.duration;
-
-            return acc;
-          },
-          {} as Record<string, TrackAggregate>,
-        );
-
-      const aggregatedTracks = Object.values(aggregatedTracksMap)
-        .sort((a, b) => b.total_duration - a.total_duration)
-        .map((track, index) => ({
-          ...track,
-          rank: index + 1,
-          total_duration: Math.floor(track.total_duration / 1000),
-        }))
-        .slice(0, 100);
-
-      setTracks(aggregatedTracks);
-      setHasMore(aggregatedTracks.length > pageSize);
-      setIsLoading(false);
-    };
-
-    run();
-  }, [pageSize]);
+  const hasMore = cursor + pageSize < data.length;
 
   const loadMore = () => {
-    if (!hasMore) return;
-
-    setCursor((prevCursor) => prevCursor + pageSize);
-    setHasMore(cursor + pageSize < tracks.length);
+    if (hasMore) {
+      setCursor((prev) => prev + pageSize);
+    }
   };
 
+  const tracks = data.slice(0, cursor + pageSize);
+
   return {
-    tracks: tracks.slice(0, cursor + pageSize),
+    tracks,
     isLoading,
+    isError,
+    error,
     hasMore,
     loadMore,
   };
-};
+}
+
+export function useTopTracksOnDate(
+  date: string,
+  pageSize = 10,
+  enabled = true,
+) {
+  return useTopTracks(
+    ["topTracksOnDate", date],
+    fetchTrackAggregatesOnDate,
+    [date],
+    pageSize,
+    enabled,
+  );
+}
+
+export function useTopTracksOnWeek(
+  date: string,
+  pageSize = 10,
+  enabled = true,
+) {
+  return useTopTracks(
+    ["topTracksOnWeek", date],
+    fetchTrackAggregatesOnWeek,
+    [date],
+    pageSize,
+    enabled,
+  );
+}
+
+export function useTopTracksOnMonth(
+  year: number,
+  month: number,
+  pageSize = 10,
+  enabled = true,
+) {
+  return useTopTracks(
+    ["topTracksOnMonth", year, month],
+    fetchTrackAggregatesOnMonth,
+    [year, month],
+    pageSize,
+    enabled,
+  );
+}
+
+export function useTopTracksOnYear(
+  year: number,
+  pageSize = 10,
+  enabled = true,
+) {
+  return useTopTracks(
+    ["topTracksOnYear", year],
+    fetchTrackAggregatesOnYear,
+    [year],
+    pageSize,
+    enabled,
+  );
+}
+
+export function useTopTracksOnLifetime(pageSize = 10, enabled = true) {
+  return useTopTracks(
+    ["topTracksOnLifetime"],
+    fetchTrackAggregatesOnLifetime,
+    [],
+    pageSize,
+    enabled,
+  );
+}

@@ -188,3 +188,37 @@ export async function fetchAlbumAggregatesOnYear(
       total_duration: Math.floor(album.total_duration / 1000),
     }));
 }
+
+export async function fetchAlbumAggregatesOnLifetime(): Promise<
+  AlbumAggregate[]
+> {
+  const response = await fetch("./data/spotify_data.json");
+  const allTracks: Track[] = await response.json();
+
+  const aggregatedAlbumsMap: Record<string, AlbumAggregate> = allTracks.reduce(
+    (acc, track) => {
+      const key = `${track.artist_name}-${track.album_name}`;
+
+      if (!acc[key]) {
+        acc[key] = {
+          album_name: track.album_name,
+          artist_name: track.artist_name,
+          total_duration: 0,
+          rank: 0,
+        };
+      }
+      acc[key].total_duration += track.duration;
+
+      return acc;
+    },
+    {} as Record<string, AlbumAggregate>,
+  );
+
+  return Object.values(aggregatedAlbumsMap)
+    .sort((a, b) => b.total_duration - a.total_duration)
+    .map((album, index) => ({
+      ...album,
+      rank: index + 1,
+      total_duration: Math.floor(album.total_duration / 1000),
+    }));
+}

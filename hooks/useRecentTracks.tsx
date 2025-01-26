@@ -1,47 +1,46 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
+import { useQuery } from "@tanstack/react-query";
 
 import { Track } from "@/types/music";
 import { fetchTracks } from "@/services/fetchTracks";
 
-export const useRecentTracks = (pageSize = 10) => {
-  const [recentTracks, setRecentTracks] = useState<Track[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
-  const [hasMore, setHasMore] = useState(false);
+export function useRecentTracks(pageSize = 10) {
+  const {
+    data: allTracks = [],
+    isLoading,
+    isError,
+    error,
+  } = useQuery({
+    queryKey: ["recentTracks"],
+    queryFn: fetchTracks,
+  });
+
+  const sortedTracks: Track[] = allTracks.slice().sort((a, b) => {
+    return new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime();
+  });
+
+  const convertedTracks: Track[] = sortedTracks.map((track) => ({
+    ...track,
+    timestamp: new Date(track.timestamp).toLocaleString(),
+  }));
+
   const [cursor, setCursor] = useState(0);
 
-  useEffect(() => {
-    const run = async () => {
-      const allTracks: Track[] = await fetchTracks();
-
-      const sortedTracks = allTracks.sort(
-        (a, b) =>
-          new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime(),
-      );
-
-      const convertedTracks = sortedTracks.map((track) => ({
-        ...track,
-        timestamp: new Date(track.timestamp).toLocaleString(),
-      }));
-
-      setRecentTracks(convertedTracks);
-      setHasMore(convertedTracks.length > pageSize);
-      setIsLoading(false);
-    };
-
-    run();
-  }, [pageSize]);
+  const hasMore = cursor + pageSize < convertedTracks.length;
 
   const loadMore = () => {
     if (!hasMore) return;
-
-    setCursor((prevCursor) => prevCursor + pageSize);
-    setHasMore(cursor + pageSize < recentTracks.length);
+    setCursor((prev) => prev + pageSize);
   };
 
+  const visibleTracks = convertedTracks.slice(0, cursor + pageSize);
+
   return {
-    recentTracks: recentTracks.slice(0, cursor + pageSize),
+    recentTracks: visibleTracks,
     isLoading,
+    isError,
+    error,
     hasMore,
     loadMore,
   };
-};
+}
