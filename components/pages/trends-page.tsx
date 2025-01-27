@@ -18,23 +18,147 @@ import {
 } from "@/utils/chart-data-processing";
 import { useCountTracksPerDayOnYear } from "@/hooks/useCountTracks";
 
+type PeriodKey =
+  | "2024"
+  | "2023"
+  | "2022"
+  | "2021"
+  | "2020"
+  | "2019"
+  | "2018"
+  | "2017"
+  | "2016"
+  | "2015";
+
 export default function TrendsPageComponent() {
   const dropdownItems = [
-    { key: "today", label: "Today" },
-    { key: "last_week", label: "This Week" },
-    { key: "last_month", label: "This Month" },
-    { key: "last_year", label: "This Year" },
+    { key: "2024", label: "2024" },
+    { key: "2023", label: "2023" },
+    { key: "2022", label: "2022" },
+    { key: "2021", label: "2021" },
+    { key: "2020", label: "2020" },
+    { key: "2019", label: "2019" },
+    { key: "2018", label: "2018" },
+    { key: "2017", label: "2017" },
+    { key: "2016", label: "2016" },
+    { key: "2015", label: "2015" },
   ];
-  const [selectedPeriod, setSelectedPeriod] = useState<string>("today");
+  const [selectedPeriod, setSelectedPeriod] = useState<PeriodKey>("2024");
 
-  const { hourlyAverage, isLoading: isLoadingHourly } =
-    useAverageListeningBreakdownPerHourOnYear(2024, true);
+  const periodMap = {
+    2024: {
+      hourly: useAverageListeningBreakdownPerHourOnYear(
+        2024,
+        selectedPeriod === "2024",
+      ),
+      daily: useAverageListeningBreakdownPerDayOnYear(
+        2024,
+        selectedPeriod === "2024",
+      ),
+      count: useCountTracksPerDayOnYear(2024, selectedPeriod === "2024"),
+    },
+    2023: {
+      hourly: useAverageListeningBreakdownPerHourOnYear(
+        2023,
+        selectedPeriod === "2023",
+      ),
+      daily: useAverageListeningBreakdownPerDayOnYear(
+        2023,
+        selectedPeriod === "2023",
+      ),
+      count: useCountTracksPerDayOnYear(2023, selectedPeriod === "2023"),
+    },
+    2022: {
+      hourly: useAverageListeningBreakdownPerHourOnYear(
+        2022,
+        selectedPeriod === "2022",
+      ),
+      daily: useAverageListeningBreakdownPerDayOnYear(
+        2022,
+        selectedPeriod === "2022",
+      ),
+      count: useCountTracksPerDayOnYear(2022, selectedPeriod === "2022"),
+    },
+    2021: {
+      hourly: useAverageListeningBreakdownPerHourOnYear(
+        2021,
+        selectedPeriod === "2021",
+      ),
+      daily: useAverageListeningBreakdownPerDayOnYear(
+        2021,
+        selectedPeriod === "2021",
+      ),
+      count: useCountTracksPerDayOnYear(2021, selectedPeriod === "2021"),
+    },
+    2020: {
+      hourly: useAverageListeningBreakdownPerHourOnYear(
+        2020,
+        selectedPeriod === "2020",
+      ),
+      daily: useAverageListeningBreakdownPerDayOnYear(
+        2020,
+        selectedPeriod === "2020",
+      ),
+      count: useCountTracksPerDayOnYear(2020, selectedPeriod === "2020"),
+    },
+    2019: {
+      hourly: useAverageListeningBreakdownPerHourOnYear(
+        2019,
+        selectedPeriod === "2019",
+      ),
+      daily: useAverageListeningBreakdownPerDayOnYear(
+        2019,
+        selectedPeriod === "2019",
+      ),
+      count: useCountTracksPerDayOnYear(2019, selectedPeriod === "2019"),
+    },
+    2018: {
+      hourly: useAverageListeningBreakdownPerHourOnYear(
+        2018,
+        selectedPeriod === "2018",
+      ),
+      daily: useAverageListeningBreakdownPerDayOnYear(
+        2018,
+        selectedPeriod === "2018",
+      ),
+      count: useCountTracksPerDayOnYear(2018, selectedPeriod === "2018"),
+    },
+    2017: {
+      hourly: useAverageListeningBreakdownPerHourOnYear(
+        2017,
+        selectedPeriod === "2017",
+      ),
+      daily: useAverageListeningBreakdownPerDayOnYear(
+        2017,
+        selectedPeriod === "2017",
+      ),
+      count: useCountTracksPerDayOnYear(2017, selectedPeriod === "2017"),
+    },
+    2016: {
+      hourly: useAverageListeningBreakdownPerHourOnYear(
+        2016,
+        selectedPeriod === "2016",
+      ),
+      daily: useAverageListeningBreakdownPerDayOnYear(
+        2016,
+        selectedPeriod === "2016",
+      ),
+      count: useCountTracksPerDayOnYear(2016, selectedPeriod === "2016"),
+    },
+    2015: {
+      hourly: useAverageListeningBreakdownPerHourOnYear(
+        2015,
+        selectedPeriod === "2015",
+      ),
+      daily: useAverageListeningBreakdownPerDayOnYear(
+        2015,
+        selectedPeriod === "2015",
+      ),
+      count: useCountTracksPerDayOnYear(2015, selectedPeriod === "2015"),
+    },
+  };
 
-  const { dailyAverage, isLoading: isLoadingDaily } =
-    useAverageListeningBreakdownPerDayOnYear(2024, true);
-
-  const { dailySongCounts, isLoading: isLoadingCalendar } =
-    useCountTracksPerDayOnYear(2024, true);
+  const { hourly, daily, count } = periodMap[selectedPeriod as PeriodKey];
 
   return (
     <div className="h-[calc(100vh-106px)]">
@@ -42,7 +166,7 @@ export default function TrendsPageComponent() {
         <p className="text-foreground">Listening Trends</p>
         <PeriodDropdown
           items={dropdownItems}
-          onSelectionChange={(key) => setSelectedPeriod(key)}
+          onSelectionChange={(key) => setSelectedPeriod(key as PeriodKey)}
         />
       </div>
       <Divider />
@@ -52,8 +176,8 @@ export default function TrendsPageComponent() {
           <div className="w-full h-[50%] flex flex-row gap-4 p-2">
             <TrendsAverageCard
               chartType="horizontal"
-              data={processHourlyListening(hourlyAverage)}
-              isLoading={isLoadingHourly}
+              data={processHourlyListening(hourly.hourlyAverage)}
+              isLoading={hourly.isLoading}
               title="Average Listening Time per Hour"
               xAxisLabel="Hour"
               xTicks={["0:00", "6:00", "12:00", "18:00", "23:00"]}
@@ -62,8 +186,8 @@ export default function TrendsPageComponent() {
             />
             <TrendsAverageCard
               chartType="vertical"
-              data={processWeeklyListening(dailyAverage)}
-              isLoading={isLoadingDaily}
+              data={processWeeklyListening(daily.dailyAverage)}
+              isLoading={daily.isLoading}
               title="Average Listening Time per Day"
               xAxisLabel="Duration"
               yAxisLabel="Day"
@@ -83,10 +207,13 @@ export default function TrendsPageComponent() {
           {/* Calendar Chart */}
           <div className="w-full h-[50%] flex flex-row gap-4 p-2">
             <TrendsCalendarCard
-              data={processYearCountTracks(dailySongCounts, 2024)}
-              isLoading={isLoadingCalendar}
+              data={processYearCountTracks(
+                count.dailySongCounts,
+                Number(selectedPeriod as PeriodKey),
+              )}
+              isLoading={count.isLoading}
               title="Activity Calendar"
-              year={2024}
+              year={Number(selectedPeriod as PeriodKey)}
             />
           </div>
         </div>
