@@ -20,7 +20,9 @@ interface BreakdownBarChartProps {
   yAxisLabel: string;
   yAxisLabelOffset: number;
   xTicks?: string[];
+  yTicks?: number[];
   className?: string;
+  enableBarBackground?: boolean;
 }
 
 export default function BreakdownHorizontalBarChart({
@@ -29,7 +31,9 @@ export default function BreakdownHorizontalBarChart({
   yAxisLabel,
   yAxisLabelOffset,
   xTicks,
+  yTicks,
   className,
+  enableBarBackground,
 }: BreakdownBarChartProps) {
   const { theme } = useTheme();
 
@@ -111,6 +115,7 @@ export default function BreakdownHorizontalBarChart({
             tick={{
               fill: theme === "dark" ? "#C5E4F6" : "#7A2528", // bg-primary-100
             }}
+            ticks={yTicks}
             type="number"
           />
           <Tooltip
@@ -133,9 +138,20 @@ export default function BreakdownHorizontalBarChart({
             }}
           />
           <Bar
+            background={
+              enableBarBackground
+                ? { fill: theme === "dark" ? "#000F3080" : "#FFF1E680" } // bg-primary-800
+                : undefined
+            }
             dataKey="duration"
             fill={theme === "dark" ? "#000A28" : "#FFF9F2"} // bg-primary-900
-            stroke={theme === "dark" ? "#C5E4F6" : "#7A2528"} // bg-primary-100
+            stroke={
+              enableBarBackground
+                ? undefined
+                : theme === "dark"
+                  ? "#C5E4F6"
+                  : "#7A2528"
+            }
           />
         </BarChart>
       </ResponsiveContainer>

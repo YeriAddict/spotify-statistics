@@ -43,10 +43,12 @@ export function TrendsAverageCard({
             <BreakdownHorizontalBarChart
               className="w-full h-[250px]"
               data={data}
+              enableBarBackground={true}
               xAxisLabel={xAxisLabel}
               xTicks={xTicks}
               yAxisLabel={yAxisLabel}
               yAxisLabelOffset={yAxisLabelOffset}
+              yTicks={[0, 15, 30, 45, 60]}
             />
           ) : (
             <BreakdownVerticalBarChart
