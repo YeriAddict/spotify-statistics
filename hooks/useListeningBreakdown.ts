@@ -1,7 +1,7 @@
 import { useQuery } from "@tanstack/react-query";
 
 import { Track } from "@/types/music";
-import { fetchTracks } from "@/services/fetchTracks";
+import { fetchTracks, fetchTracksOnYear } from "@/services/fetchTracks";
 
 function getWeekStartAndEndDates(date: string) {
   const givenDate = new Date(date);
@@ -156,6 +156,111 @@ export function useListeningBreakdownOnYear(year: number, enabled: boolean) {
 
   return {
     yearlyListening,
+    isLoading,
+  };
+}
+
+export function useAverageListeningBreakdownPerHourOnYear(
+  year: number,
+  enabled: boolean,
+) {
+  const { data: hourlyAverage = [], isLoading } = useQuery({
+    queryKey: ["averageListeningPerHour", year],
+    enabled,
+    queryFn: async () => {
+      const allTracks: Track[] = await fetchTracksOnYear(year);
+
+      const dailyHourlyDurations: Record<string, number[]> = {};
+
+      allTracks.forEach((track) => {
+        const trackDate = new Date(track.timestamp);
+        const dateKey = trackDate.toISOString().split("T")[0];
+        const hour = trackDate.getUTCHours();
+
+        if (!dailyHourlyDurations[dateKey]) {
+          dailyHourlyDurations[dateKey] = Array(24).fill(0);
+        }
+
+        dailyHourlyDurations[dateKey][hour] += track.duration;
+      });
+
+      const hourlyTotals = Array(24).fill(0);
+      const hourlyCounts = Array(24).fill(0);
+
+      Object.values(dailyHourlyDurations).forEach((hourlyData) => {
+        hourlyData.forEach((duration, hour) => {
+          if (duration > 0) {
+            hourlyTotals[hour] += duration;
+            hourlyCounts[hour] += 1;
+          }
+        });
+      });
+
+      const hourlyAverage = hourlyTotals.map((totalDuration, hour) =>
+        hourlyCounts[hour] > 0
+          ? Math.round(totalDuration / 1000 / hourlyCounts[hour])
+          : 0,
+      );
+
+      return hourlyAverage;
+    },
+  });
+
+  return {
+    hourlyAverage,
+    isLoading,
+  };
+}
+
+export function useAverageListeningBreakdownPerDayOnYear(
+  year: number,
+  enabled: boolean,
+) {
+  const { data: dailyAverage = [], isLoading } = useQuery({
+    queryKey: ["averageListeningPerDayOfWeek", year],
+    enabled,
+    queryFn: async () => {
+      const allTracks: Track[] = await fetchTracksOnYear(year);
+
+      const dailyDurationMap: Record<string, number> = {};
+      const dailyDayOfWeekMap: Record<string, number> = {};
+
+      allTracks.forEach((track) => {
+        const trackDate = new Date(track.timestamp);
+        const dateKey = trackDate.toISOString().split("T")[0];
+
+        if (!dailyDurationMap[dateKey]) {
+          dailyDurationMap[dateKey] = 0;
+          dailyDayOfWeekMap[dateKey] = trackDate.getUTCDay();
+        }
+
+        dailyDurationMap[dateKey] += track.duration;
+      });
+
+      const dayAccumulator = Array(7).fill(0);
+      const dayCounts = Array(7).fill(0);
+
+      Object.entries(dailyDurationMap).forEach(([dateKey, totalDuration]) => {
+        const dayOfWeek = dailyDayOfWeekMap[dateKey];
+
+        dayAccumulator[dayOfWeek] += totalDuration;
+        dayCounts[dayOfWeek] += 1;
+      });
+
+      const dayAveragesInSeconds = dayAccumulator.map((totalMs, dayIndex) => {
+        if (dayCounts[dayIndex] === 0) return 0;
+
+        return Math.round(totalMs / 1000 / dayCounts[dayIndex]);
+      });
+
+      const reorderMap = [1, 2, 3, 4, 5, 6, 0];
+
+      return reorderMap.map((dayIndex) => dayAveragesInSeconds[dayIndex]);
+    },
+  });
+
+  return {
+    dailyAverage,
     isLoading,
   };
 }

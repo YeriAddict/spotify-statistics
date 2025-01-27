@@ -67,3 +67,47 @@ export function useCountTracksOnYear(year: number, enabled: boolean) {
     enabled,
   );
 }
+
+export function useCountTracksPerDayOnYear(year: number, enabled: boolean) {
+  const { data: dailySongCounts = [], isLoading } = useQuery({
+    queryKey: ["songCountPerDay", year],
+    enabled,
+    queryFn: async () => {
+      const allTracks: Track[] = await fetchTracksOnYear(year);
+
+      const dailySongCountMap: Record<string, number> = {};
+
+      allTracks.forEach((track) => {
+        const trackDate = new Date(track.timestamp);
+        const dateKey = trackDate.toISOString().split("T")[0];
+
+        if (!dailySongCountMap[dateKey]) {
+          dailySongCountMap[dateKey] = 0;
+        }
+
+        dailySongCountMap[dateKey] += 1;
+      });
+
+      const daysInYear = Array.from({ length: 365 }, (_, i) => {
+        const date = new Date(year, 0, i + 1);
+
+        if (date.getFullYear() === year) {
+          return date.toISOString().split("T")[0];
+        }
+
+        return null;
+      }).filter(Boolean) as string[];
+
+      const dailySongCounts = daysInYear.map(
+        (dateKey) => dailySongCountMap[dateKey] || 0,
+      );
+
+      return dailySongCounts;
+    },
+  });
+
+  return {
+    dailySongCounts,
+    isLoading,
+  };
+}

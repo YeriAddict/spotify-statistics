@@ -60,3 +60,24 @@ export function processYearlyListening(yearlyListening: number[] | undefined) {
     duration: seconds,
   }));
 }
+
+export function processYearCountTracks(songCounts: number[], year: number) {
+  const isLeapYear = (year: number) =>
+    (year % 4 === 0 && year % 100 !== 0) || year % 400 === 0;
+
+  const daysInYear = isLeapYear(year) ? 366 : 365;
+
+  const processedData = Array.from({ length: daysInYear }, (_, i) => {
+    const date = new Date(year, 0, i + 1);
+    const formattedDate = date.toISOString().split("T")[0];
+
+    return songCounts[i] > 0
+      ? {
+          value: songCounts[i],
+          day: formattedDate,
+        }
+      : null;
+  }).filter((item) => item !== null);
+
+  return processedData as { value: number; day: string }[];
+}

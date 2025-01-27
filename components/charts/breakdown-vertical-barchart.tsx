@@ -17,32 +17,19 @@ interface BreakdownBarChartProps {
     duration: number;
   }>;
   xAxisLabel: string;
-  yAxisLabel: string;
-  xTicks?: string[];
+  yTicks?: string[];
+  className?: string;
 }
 
-export default function BreakdownBarChart({
+export default function BreakdownVerticalBarChart({
   data,
   xAxisLabel,
-  yAxisLabel,
-  xTicks,
+  yTicks,
+  className,
 }: BreakdownBarChartProps) {
   const { theme } = useTheme();
 
-  const getYAxisUnit = (
-    data: Array<{
-      label: string;
-      duration: number;
-    }>,
-  ) => {
-    if (data.length === 24) return { unit: "minutes", divisor: 60 };
-    if (data.length === 7) return { unit: "hours", divisor: 3600 };
-    if (data.length === 12) return { unit: "days", divisor: 86400 };
-
-    return { unit: "hours", divisor: 3600 };
-  };
-
-  const { unit, divisor } = getYAxisUnit(data);
+  const divisor = 3600;
 
   const finalData = data.map((item) => ({
     label: item.label,
@@ -50,30 +37,41 @@ export default function BreakdownBarChart({
     duration: item.duration / divisor,
   }));
 
+  const xTicks = [0, 4, 8, 12, 16, 20, 24];
+
   return (
-    <div className="w-full h-[350px]">
+    <div className={`w-full ${className}`}>
       <ResponsiveContainer>
         <BarChart
           data={finalData}
+          layout="vertical"
           margin={{
             top: 5,
             right: 15,
-            left: 15,
+            left: 35,
             bottom: 15,
           }}
         >
           <CartesianGrid
-            horizontal
+            vertical
+            horizontal={false}
             stroke={theme === "dark" ? "#C5E4F6" : "#7A2528"} // bg-primary-100
             strokeDasharray="5 5"
-            vertical={false}
           />
-          <XAxis
-            angle={data.length === 7 || data.length === 12 ? -45 : 0}
+          <YAxis
             dataKey="label"
             interval={0}
+            tick={{
+              fill: theme === "dark" ? "#C5E4F6" : "#7A2528", // bg-primary-100
+              textAnchor: "end",
+              style: { fontSize: "16px" },
+            }}
+            ticks={yTicks}
+            type="category"
+          />
+          <XAxis
             label={{
-              value: xAxisLabel,
+              value: `${xAxisLabel} (hours)`,
               position: "insideBottom",
               dx: 15,
               dy: 15,
@@ -82,29 +80,9 @@ export default function BreakdownBarChart({
             }}
             tick={{
               fill: theme === "dark" ? "#C5E4F6" : "#7A2528", // bg-primary-100
-              textAnchor:
-                data.length === 7 || data.length === 12 ? "end" : "middle",
-              style:
-                data.length === 7 || data.length === 12
-                  ? { fontSize: "8px" }
-                  : { fontSize: "16px" },
             }}
             ticks={xTicks}
-          />
-
-          <YAxis
-            label={{
-              value: `${yAxisLabel} (${unit})`,
-              angle: -90,
-              position: "top",
-              offset: -155,
-              dx: -10,
-              fill: theme === "dark" ? "#C5E4F6" : "#7A2528", // bg-primary-100
-              style: { fontWeight: "bold" },
-            }}
-            tick={{
-              fill: theme === "dark" ? "#C5E4F6" : "#7A2528", // bg-primary-100
-            }}
+            type="number"
           />
           <Tooltip
             contentStyle={{
@@ -126,9 +104,9 @@ export default function BreakdownBarChart({
             }}
           />
           <Bar
+            background={{ fill: theme === "dark" ? "#000F3080" : "#FFF1E680" }} // bg-primary-800
             dataKey="duration"
             fill={theme === "dark" ? "#000A28" : "#FFF9F2"} // bg-primary-900
-            stroke={theme === "dark" ? "#C5E4F6" : "#7A2528"} // bg-primary-100
           />
         </BarChart>
       </ResponsiveContainer>

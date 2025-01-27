@@ -7,7 +7,7 @@ import { ActivityCountCard } from "../cards/activity-count-card";
 import { ActivityTopCard } from "../cards/activity-top-card";
 import { ActivityRecentTracksCard } from "../cards/activity-recent-card";
 import { ActivityBreakdownCard } from "../cards/activity-breakdown-card";
-import BreakdownBarChart from "../charts/breakdown-barchart";
+import BreakdownHorizontalBarChart from "../charts/breakdown-horizontal-barchart";
 import PeriodDropdown from "../dropdowns/period-dropdown";
 
 import {
@@ -592,13 +592,15 @@ export default function ActivityPageComponent() {
                     isLoading: current.listeningBreakdown.isLoading,
                     content: (
                       <div className="w-full h-[350px] pt-6">
-                        <BreakdownBarChart
+                        <BreakdownHorizontalBarChart
+                          className="w-full h-[350px]"
                           data={current.listeningBreakdown.listeningBreakdown}
                           xAxisLabel={
                             current.listeningBreakdown.chartLabels.xAxisLabel
                           }
                           xTicks={current.listeningBreakdown.chartLabels.xTicks}
                           yAxisLabel="Duration"
+                          yAxisLabelOffset={-155}
                         />
                       </div>
                     ),
@@ -609,7 +611,8 @@ export default function ActivityPageComponent() {
                     isLoading: previous.listeningBreakdown.isLoading,
                     content: (
                       <div className="w-full h-[350px] pt-6">
-                        <BreakdownBarChart
+                        <BreakdownHorizontalBarChart
+                          className="w-full h-[350px]"
                           data={previous.listeningBreakdown.listeningBreakdown}
                           xAxisLabel={
                             previous.listeningBreakdown.chartLabels.xAxisLabel
@@ -618,6 +621,7 @@ export default function ActivityPageComponent() {
                             previous.listeningBreakdown.chartLabels.xTicks
                           }
                           yAxisLabel="Duration"
+                          yAxisLabelOffset={-155}
                         />
                       </div>
                     ),
