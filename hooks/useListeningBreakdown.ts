@@ -31,7 +31,7 @@ export function useListeningBreakdownOnDate(date: string, enabled: boolean) {
 
       const filteredTracks = allTracks.filter((track) => {
         const trackStart = new Date(track.timestamp);
-        const localDate = trackStart.toLocaleDateString("en-CA");
+        const localDate = trackStart.toISOString().split("T")[0];
 
         return localDate === date;
       });
@@ -40,7 +40,7 @@ export function useListeningBreakdownOnDate(date: string, enabled: boolean) {
 
       filteredTracks.forEach((track) => {
         const trackStart = new Date(track.timestamp);
-        const localHour = trackStart.getHours();
+        const localHour = trackStart.getUTCHours();
 
         hourlyAccumulator[localHour] += track.duration;
       });
