@@ -38,25 +38,25 @@ export default function TopAlbumsPageComponent() {
     isLoading: todayLoading,
     hasMore: todayHasMore,
     loadMore: loadMoreToday,
-  } = useTopAlbumsOnDate("2024-11-25", 10, selectedPeriod === "today");
+  } = useTopAlbumsOnDate("2025-01-27", 10, selectedPeriod === "today");
   const {
     albums: weekAlbums,
     isLoading: weekLoading,
     hasMore: weekHasMore,
     loadMore: loadMoreWeek,
-  } = useTopAlbumsOnWeek("2024-11-25", 10, selectedPeriod === "this_week");
+  } = useTopAlbumsOnWeek("2025-01-27", 10, selectedPeriod === "this_week");
   const {
     albums: monthAlbums,
     isLoading: monthLoading,
     hasMore: monthHasMore,
     loadMore: loadMoreMonth,
-  } = useTopAlbumsOnMonth(2024, 11, 10, selectedPeriod === "this_month");
+  } = useTopAlbumsOnMonth(2025, 1, 10, selectedPeriod === "this_month");
   const {
     albums: yearAlbums,
     isLoading: yearLoading,
     hasMore: yearHasMore,
     loadMore: loadMoreYear,
-  } = useTopAlbumsOnYear(2024, 10, selectedPeriod === "this_year");
+  } = useTopAlbumsOnYear(2025, 10, selectedPeriod === "this_year");
   const {
     albums: allTimeAlbums,
     isLoading: allTimeLoading,

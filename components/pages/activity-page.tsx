@@ -164,19 +164,19 @@ export default function ActivityPageComponent() {
           },
         },
         trackCount: useCountTracksOnDate(
-          "2024-11-25",
+          "2025-01-27",
           selectedPeriod === "today",
         ),
         artistCount: useCountArtistsOnDate(
-          "2024-11-25",
+          "2025-01-27",
           selectedPeriod === "today",
         ),
         totalDuration: useTotalDurationOnDate(
-          "2024-11-25",
+          "2025-01-27",
           selectedPeriod === "today",
         ),
-        topTrack: useTopTrackOnDate("2024-11-25", selectedPeriod === "today"),
-        topArtist: useTopArtistOnDate("2024-11-25", selectedPeriod === "today"),
+        topTrack: useTopTrackOnDate("2025-01-27", selectedPeriod === "today"),
+        topArtist: useTopArtistOnDate("2025-01-27", selectedPeriod === "today"),
         tabLabel: "Today",
       },
       previous: {
@@ -189,19 +189,19 @@ export default function ActivityPageComponent() {
           },
         },
         trackCount: useCountTracksOnDate(
-          "2024-11-24",
+          "2025-01-26",
           selectedPeriod === "today",
         ),
         artistCount: useCountArtistsOnDate(
-          "2024-11-24",
+          "2025-01-26",
           selectedPeriod === "today",
         ),
         totalDuration: useTotalDurationOnDate(
-          "2024-11-24",
+          "2025-01-26",
           selectedPeriod === "today",
         ),
-        topTrack: useTopTrackOnDate("2024-11-24", selectedPeriod === "today"),
-        topArtist: useTopArtistOnDate("2024-11-24", selectedPeriod === "today"),
+        topTrack: useTopTrackOnDate("2025-01-26", selectedPeriod === "today"),
+        topArtist: useTopArtistOnDate("2025-01-26", selectedPeriod === "today"),
         tabLabel: "Yesterday",
       },
     },
@@ -224,23 +224,23 @@ export default function ActivityPageComponent() {
           },
         },
         trackCount: useCountTracksOnWeek(
-          "2024-11-25",
+          "2025-01-27",
           selectedPeriod === "last_week",
         ),
         artistCount: useCountArtistsOnWeek(
-          "2024-11-25",
+          "2025-01-27",
           selectedPeriod === "last_week",
         ),
         totalDuration: useTotalDurationOnWeek(
-          "2024-11-25",
+          "2025-01-27",
           selectedPeriod === "last_week",
         ),
         topTrack: useTopTrackOnWeek(
-          "2024-11-25",
+          "2025-01-27",
           selectedPeriod === "last_week",
         ),
         topArtist: useTopArtistOnWeek(
-          "2024-11-25",
+          "2025-01-27",
           selectedPeriod === "last_week",
         ),
         tabLabel: "This Week",
@@ -263,23 +263,23 @@ export default function ActivityPageComponent() {
           },
         },
         trackCount: useCountTracksOnWeek(
-          "2024-11-24",
+          "2025-01-26",
           selectedPeriod === "last_week",
         ),
         artistCount: useCountArtistsOnWeek(
-          "2024-11-24",
+          "2025-01-26",
           selectedPeriod === "last_week",
         ),
         totalDuration: useTotalDurationOnWeek(
-          "2024-11-24",
+          "2025-01-26",
           selectedPeriod === "last_week",
         ),
         topTrack: useTopTrackOnWeek(
-          "2024-11-24",
+          "2025-01-26",
           selectedPeriod === "last_week",
         ),
         topArtist: useTopArtistOnWeek(
-          "2024-11-24",
+          "2025-01-26",
           selectedPeriod === "last_week",
         ),
         tabLabel: "Last Week",
@@ -296,24 +296,24 @@ export default function ActivityPageComponent() {
           },
         },
         trackCount: useCountTracksOnMonth(
-          2024,
-          11,
+          2025,
+          1,
           selectedPeriod === "last_month",
         ),
         artistCount: useCountArtistsOnMonth(
-          2024,
-          11,
+          2025,
+          1,
           selectedPeriod === "last_month",
         ),
         totalDuration: useTotalDurationOnMonth(
-          2024,
-          11,
+          2025,
+          1,
           selectedPeriod === "last_month",
         ),
-        topTrack: useTopTrackOnMonth(2024, 11, selectedPeriod === "last_month"),
+        topTrack: useTopTrackOnMonth(2025, 1, selectedPeriod === "last_month"),
         topArtist: useTopArtistOnMonth(
-          2024,
-          11,
+          2025,
+          1,
           selectedPeriod === "last_month",
         ),
         tabLabel: "This Month",
@@ -329,23 +329,23 @@ export default function ActivityPageComponent() {
         },
         trackCount: useCountTracksOnMonth(
           2024,
-          10,
+          12,
           selectedPeriod === "last_month",
         ),
         artistCount: useCountArtistsOnMonth(
           2024,
-          10,
+          12,
           selectedPeriod === "last_month",
         ),
         totalDuration: useTotalDurationOnMonth(
           2024,
-          10,
+          12,
           selectedPeriod === "last_month",
         ),
-        topTrack: useTopTrackOnMonth(2024, 10, selectedPeriod === "last_month"),
+        topTrack: useTopTrackOnMonth(2024, 12, selectedPeriod === "last_month"),
         topArtist: useTopArtistOnMonth(
           2024,
-          10,
+          12,
           selectedPeriod === "last_month",
         ),
         tabLabel: "Last Month",
@@ -353,6 +353,41 @@ export default function ActivityPageComponent() {
     },
     last_year: {
       current: {
+        listeningBreakdown: {
+          listeningBreakdown: [],
+          isLoading: false,
+          chartLabels: {
+            xTicks: [
+              "January",
+              "February",
+              "March",
+              "April",
+              "May",
+              "June",
+              "July",
+              "August",
+              "September",
+              "October",
+              "November",
+              "December",
+            ],
+            xAxisLabel: "Month",
+          },
+        },
+        trackCount: useCountTracksOnYear(2025, selectedPeriod === "last_year"),
+        artistCount: useCountArtistsOnYear(
+          2025,
+          selectedPeriod === "last_year",
+        ),
+        totalDuration: useTotalDurationOnYear(
+          2025,
+          selectedPeriod === "last_year",
+        ),
+        topTrack: useTopTrackOnYear(2025, selectedPeriod === "last_year"),
+        topArtist: useTopArtistOnYear(2025, selectedPeriod === "last_year"),
+        tabLabel: "This Year",
+      },
+      previous: {
         listeningBreakdown: {
           listeningBreakdown: [],
           isLoading: false,
@@ -385,41 +420,6 @@ export default function ActivityPageComponent() {
         ),
         topTrack: useTopTrackOnYear(2024, selectedPeriod === "last_year"),
         topArtist: useTopArtistOnYear(2024, selectedPeriod === "last_year"),
-        tabLabel: "This Year",
-      },
-      previous: {
-        listeningBreakdown: {
-          listeningBreakdown: [],
-          isLoading: false,
-          chartLabels: {
-            xTicks: [
-              "January",
-              "February",
-              "March",
-              "April",
-              "May",
-              "June",
-              "July",
-              "August",
-              "September",
-              "October",
-              "November",
-              "December",
-            ],
-            xAxisLabel: "Month",
-          },
-        },
-        trackCount: useCountTracksOnYear(2023, selectedPeriod === "last_year"),
-        artistCount: useCountArtistsOnYear(
-          2023,
-          selectedPeriod === "last_year",
-        ),
-        totalDuration: useTotalDurationOnYear(
-          2023,
-          selectedPeriod === "last_year",
-        ),
-        topTrack: useTopTrackOnYear(2023, selectedPeriod === "last_year"),
-        topArtist: useTopArtistOnYear(2023, selectedPeriod === "last_year"),
         tabLabel: "Last Year",
       },
     },
@@ -427,7 +427,7 @@ export default function ActivityPageComponent() {
 
   {
     const { hourlyListening, isLoading } = useListeningBreakdownOnDate(
-      "2024-11-25",
+      "2025-01-27",
       selectedPeriod === "today",
     );
 
@@ -437,7 +437,7 @@ export default function ActivityPageComponent() {
   }
   {
     const { hourlyListening, isLoading } = useListeningBreakdownOnDate(
-      "2024-11-24",
+      "2025-01-26",
       selectedPeriod === "today",
     );
 
@@ -448,7 +448,7 @@ export default function ActivityPageComponent() {
 
   {
     const { weeklyListening, isLoading } = useListeningBreakdownOnWeek(
-      "2024-11-25",
+      "2025-01-27",
       selectedPeriod === "last_week",
     );
 
@@ -458,7 +458,7 @@ export default function ActivityPageComponent() {
   }
   {
     const { weeklyListening, isLoading } = useListeningBreakdownOnWeek(
-      "2024-11-24",
+      "2025-01-26",
       selectedPeriod === "last_week",
     );
 
@@ -469,8 +469,8 @@ export default function ActivityPageComponent() {
 
   {
     const { monthlyListening, isLoading } = useListeningBreakdownOnMonth(
-      2024,
-      11,
+      2025,
+      1,
       selectedPeriod === "last_month",
     );
 
@@ -486,7 +486,7 @@ export default function ActivityPageComponent() {
   {
     const { monthlyListening, isLoading } = useListeningBreakdownOnMonth(
       2024,
-      10,
+      12,
       selectedPeriod === "last_month",
     );
 
@@ -502,7 +502,7 @@ export default function ActivityPageComponent() {
 
   {
     const { yearlyListening, isLoading } = useListeningBreakdownOnYear(
-      2024,
+      2025,
       selectedPeriod === "last_year",
     );
 
@@ -512,7 +512,7 @@ export default function ActivityPageComponent() {
   }
   {
     const { yearlyListening, isLoading } = useListeningBreakdownOnYear(
-      2023,
+      2024,
       selectedPeriod === "last_year",
     );
 

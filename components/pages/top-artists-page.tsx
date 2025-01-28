@@ -37,25 +37,25 @@ export default function TopArtistsPageComponent() {
     isLoading: todayLoading,
     hasMore: todayHasMore,
     loadMore: loadMoreToday,
-  } = useTopArtistsOnDate("2024-11-25", 10, selectedPeriod === "today");
+  } = useTopArtistsOnDate("2025-01-27", 10, selectedPeriod === "today");
   const {
     artists: weekArtists,
     isLoading: weekLoading,
     hasMore: weekHasMore,
     loadMore: loadMoreWeek,
-  } = useTopArtistsOnWeek("2024-11-25", 10, selectedPeriod === "this_week");
+  } = useTopArtistsOnWeek("2025-01-27", 10, selectedPeriod === "this_week");
   const {
     artists: monthArtists,
     isLoading: monthLoading,
     hasMore: monthHasMore,
     loadMore: loadMoreMonth,
-  } = useTopArtistsOnMonth(2024, 11, 10, selectedPeriod === "this_month");
+  } = useTopArtistsOnMonth(2025, 1, 10, selectedPeriod === "this_month");
   const {
     artists: yearArtists,
     isLoading: yearLoading,
     hasMore: yearHasMore,
     loadMore: loadMoreYear,
-  } = useTopArtistsOnYear(2024, 10, selectedPeriod === "this_year");
+  } = useTopArtistsOnYear(2025, 10, selectedPeriod === "this_year");
   const {
     artists: allTimeArtists,
     isLoading: allTimeLoading,

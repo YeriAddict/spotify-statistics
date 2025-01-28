@@ -38,25 +38,25 @@ export default function TopSongsPageComponent() {
     isLoading: todayLoading,
     hasMore: todayHasMore,
     loadMore: loadMoreToday,
-  } = useTopTracksOnDate("2024-11-25", 10, selectedPeriod === "today");
+  } = useTopTracksOnDate("2025-01-27", 10, selectedPeriod === "today");
   const {
     tracks: weekTracks,
     isLoading: weekLoading,
     hasMore: weekHasMore,
     loadMore: loadMoreWeek,
-  } = useTopTracksOnWeek("2024-11-25", 10, selectedPeriod === "this_week");
+  } = useTopTracksOnWeek("2025-01-27", 10, selectedPeriod === "this_week");
   const {
     tracks: monthTracks,
     isLoading: monthLoading,
     hasMore: monthHasMore,
     loadMore: loadMoreMonth,
-  } = useTopTracksOnMonth(2024, 11, 10, selectedPeriod === "this_month");
+  } = useTopTracksOnMonth(2025, 1, 10, selectedPeriod === "this_month");
   const {
     tracks: yearTracks,
     isLoading: yearLoading,
     hasMore: yearHasMore,
     loadMore: loadMoreYear,
-  } = useTopTracksOnYear(2024, 10, selectedPeriod === "this_year");
+  } = useTopTracksOnYear(2025, 10, selectedPeriod === "this_year");
   const {
     tracks: allTimeTracks,
     isLoading: allTimeLoading,

@@ -19,6 +19,7 @@ import {
 import { useCountTracksPerDayOnYear } from "@/hooks/useCountTracks";
 
 type PeriodKey =
+  | "2025"
   | "2024"
   | "2023"
   | "2022"
@@ -32,6 +33,7 @@ type PeriodKey =
 
 export default function TrendsPageComponent() {
   const dropdownItems = [
+    { key: "2025", label: "2025" },
     { key: "2024", label: "2024" },
     { key: "2023", label: "2023" },
     { key: "2022", label: "2022" },
@@ -46,6 +48,17 @@ export default function TrendsPageComponent() {
   const [selectedPeriod, setSelectedPeriod] = useState<PeriodKey>("2024");
 
   const periodMap = {
+    2025: {
+      hourly: useAverageListeningBreakdownPerHourOnYear(
+        2025,
+        selectedPeriod === "2025",
+      ),
+      daily: useAverageListeningBreakdownPerDayOnYear(
+        2025,
+        selectedPeriod === "2025",
+      ),
+      count: useCountTracksPerDayOnYear(2025, selectedPeriod === "2025"),
+    },
     2024: {
       hourly: useAverageListeningBreakdownPerHourOnYear(
         2024,
