@@ -20,9 +20,10 @@
         <li><a href="#charts">Charts</a></li>
         <li><a href="#state-management">State Management</a></li>
         <li><a href="#fonts">Fonts</a></li>
+        <li><a href="separation-of-concerns-principles">Separation of concerns principles</a></li>
+        <li><a href="#automation">Automation</a></li>
       </ul>
     </li>
-    <li><a href="#automation">Automation</a></li>
     <li><a href="#running-the-development-server">Running the Development Server</a>
       <ul>
         <li><a href="#modify-the-nextconfigjs-file">Modify the `next.config.js` File</a></li>
@@ -124,6 +125,12 @@ For more information, read [here](https://ui.dev/why-react-query)
 
 - **[Lora](https://fonts.google.com/specimen/Lora)**: Primary font.
 - **[Roboto](https://fonts.google.com/specimen/Roboto)**: Secondary font.
+
+---
+
+### Separation of concerns principles
+
+The code follows the principles of the MVC (Model-View-Controller) design pattern. It is organized into distinct folders for components, services, and hooks, each serving a specific purpose to ensure clarity and maintainability.
 
 ---
 
