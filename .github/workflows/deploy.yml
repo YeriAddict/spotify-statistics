@@ -14,7 +14,7 @@ on:
 
   # Trigger this workflow when update-data.yml completes successfully
   workflow_run:
-    workflows: ["update-data"]
+    workflows: ["Update Spotify Data"]
     types:
       - completed
 
