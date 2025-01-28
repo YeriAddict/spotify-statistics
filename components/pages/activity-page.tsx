@@ -159,6 +159,7 @@ export default function ActivityPageComponent() {
     formattedDate,
     previousYear,
     previousMonth,
+    previousYearBasedOnMonth,
     previousFormattedDate,
     lastWeekFormattedDate,
   } = getCurrentDateInfo();
@@ -352,27 +353,27 @@ export default function ActivityPageComponent() {
           },
         },
         trackCount: useCountTracksOnMonth(
-          previousYear,
+          previousYearBasedOnMonth,
           previousMonth,
           selectedPeriod === "last_month",
         ),
         artistCount: useCountArtistsOnMonth(
-          previousYear,
+          previousYearBasedOnMonth,
           previousMonth,
           selectedPeriod === "last_month",
         ),
         totalDuration: useTotalDurationOnMonth(
-          previousYear,
+          previousYearBasedOnMonth,
           previousMonth,
           selectedPeriod === "last_month",
         ),
         topTrack: useTopTrackOnMonth(
-          previousYear,
+          previousYearBasedOnMonth,
           previousMonth,
           selectedPeriod === "last_month",
         ),
         topArtist: useTopArtistOnMonth(
-          previousYear,
+          previousYearBasedOnMonth,
           previousMonth,
           selectedPeriod === "last_month",
         ),
@@ -522,7 +523,7 @@ export default function ActivityPageComponent() {
   }
   {
     const { monthlyListening, isLoading } = useListeningBreakdownOnMonth(
-      previousYear,
+      previousYearBasedOnMonth,
       previousMonth,
       selectedPeriod === "last_month",
     );
