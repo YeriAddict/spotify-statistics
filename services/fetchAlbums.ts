@@ -3,7 +3,9 @@ import { AlbumAggregate, Track } from "@/types/music";
 export async function fetchAlbumAggregatesOnDate(
   date: string,
 ): Promise<AlbumAggregate[]> {
-  const response = await fetch("./data/spotify_data.json");
+  const response = await fetch(
+    `./data/spotify_data.json?timestamp=${Date.now()}`,
+  );
   const allTracks: Track[] = await response.json();
 
   const filteredTracks = allTracks.filter((track) => {
@@ -65,7 +67,9 @@ export async function fetchAlbumAggregatesOnWeek(
 
   const { weekStart, weekEnd } = getWeekStartAndEndDates(date);
 
-  const response = await fetch("./data/spotify_data.json");
+  const response = await fetch(
+    `./data/spotify_data.json?timestamp=${Date.now()}`,
+  );
   const allTracks: Track[] = await response.json();
 
   const filteredTracks = allTracks.filter((track) => {
@@ -107,7 +111,9 @@ export async function fetchAlbumAggregatesOnMonth(
   year: number,
   month: number,
 ): Promise<AlbumAggregate[]> {
-  const response = await fetch("./data/spotify_data.json");
+  const response = await fetch(
+    `./data/spotify_data.json?timestamp=${Date.now()}`,
+  );
   const allTracks: Track[] = await response.json();
 
   const filteredTracks = allTracks.filter((track) => {
@@ -151,7 +157,9 @@ export async function fetchAlbumAggregatesOnMonth(
 export async function fetchAlbumAggregatesOnYear(
   year: number,
 ): Promise<AlbumAggregate[]> {
-  const response = await fetch("./data/spotify_data.json");
+  const response = await fetch(
+    `./data/spotify_data.json?timestamp=${Date.now()}`,
+  );
   const allTracks: Track[] = await response.json();
 
   const filteredTracks = allTracks.filter((track) => {
@@ -192,7 +200,9 @@ export async function fetchAlbumAggregatesOnYear(
 export async function fetchAlbumAggregatesOnLifetime(): Promise<
   AlbumAggregate[]
 > {
-  const response = await fetch("./data/spotify_data.json");
+  const response = await fetch(
+    `./data/spotify_data.json?timestamp=${Date.now()}`,
+  );
   const allTracks: Track[] = await response.json();
 
   const aggregatedAlbumsMap: Record<string, AlbumAggregate> = allTracks.reduce(

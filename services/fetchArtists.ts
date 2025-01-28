@@ -3,7 +3,9 @@ import { ArtistAggregate, Track } from "@/types/music";
 export async function fetchArtistAggregatesOnDate(
   date: string,
 ): Promise<ArtistAggregate[]> {
-  const response = await fetch("./data/spotify_data.json");
+  const response = await fetch(
+    `./data/spotify_data.json?timestamp=${Date.now()}`,
+  );
   const allTracks: Track[] = await response.json();
 
   const filteredTracks = allTracks.filter((track) => {
@@ -61,7 +63,9 @@ export async function fetchArtistAggregatesOnWeek(
 
   const { weekStart, weekEnd } = getWeekStartAndEndDates(date);
 
-  const response = await fetch("./data/spotify_data.json");
+  const response = await fetch(
+    `./data/spotify_data.json?timestamp=${Date.now()}`,
+  );
   const allTracks: Track[] = await response.json();
 
   const filteredTracks = allTracks.filter((track) => {
@@ -100,7 +104,9 @@ export async function fetchArtistAggregatesOnMonth(
   year: number,
   month: number,
 ): Promise<ArtistAggregate[]> {
-  const response = await fetch("./data/spotify_data.json");
+  const response = await fetch(
+    `./data/spotify_data.json?timestamp=${Date.now()}`,
+  );
   const allTracks: Track[] = await response.json();
 
   const filteredTracks = allTracks.filter((track) => {
@@ -141,7 +147,9 @@ export async function fetchArtistAggregatesOnMonth(
 export async function fetchArtistAggregatesOnYear(
   year: number,
 ): Promise<ArtistAggregate[]> {
-  const response = await fetch("./data/spotify_data.json");
+  const response = await fetch(
+    `./data/spotify_data.json?timestamp=${Date.now()}`,
+  );
   const allTracks: Track[] = await response.json();
 
   const filteredTracks = allTracks.filter((track) => {
@@ -179,7 +187,9 @@ export async function fetchArtistAggregatesOnYear(
 export async function fetchArtistAggregatesOnLifetime(): Promise<
   ArtistAggregate[]
 > {
-  const response = await fetch("./data/spotify_data.json");
+  const response = await fetch(
+    `./data/spotify_data.json?timestamp=${Date.now()}`,
+  );
   const allTracks: Track[] = await response.json();
 
   const aggregatedArtistsMap: Record<string, ArtistAggregate> =

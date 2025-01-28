@@ -1,13 +1,17 @@
 import { Track, TrackAggregate } from "@/types/music";
 
 export async function fetchTracks(): Promise<Track[]> {
-  const response = await fetch("./data/spotify_data.json");
+  const response = await fetch(
+    `./data/spotify_data.json?timestamp=${Date.now()}`,
+  );
 
   return response.json();
 }
 
 export async function fetchTracksOnDate(date: string): Promise<Track[]> {
-  const response = await fetch("./data/spotify_data.json");
+  const response = await fetch(
+    `./data/spotify_data.json?timestamp=${Date.now()}`,
+  );
   const allTracks: Track[] = await response.json();
 
   return allTracks.filter((track) => {
@@ -72,7 +76,9 @@ export async function fetchTracksOnWeek(date: string): Promise<Track[]> {
     return { weekStart: monday, weekEnd: sunday };
   };
 
-  const response = await fetch("./data/spotify_data.json");
+  const response = await fetch(
+    `./data/spotify_data.json?timestamp=${Date.now()}`,
+  );
   const allTracks: Track[] = await response.json();
 
   const { weekStart, weekEnd } = getWeekStartAndEndDates(date);
@@ -123,7 +129,9 @@ export async function fetchTracksOnMonth(
   year: number,
   month: number,
 ): Promise<Track[]> {
-  const response = await fetch("./data/spotify_data.json");
+  const response = await fetch(
+    `./data/spotify_data.json?timestamp=${Date.now()}`,
+  );
   const allTracks: Track[] = await response.json();
 
   return allTracks.filter((track) => {
@@ -173,7 +181,9 @@ export async function fetchTrackAggregatesOnMonth(
 }
 
 export async function fetchTracksOnYear(year: number): Promise<Track[]> {
-  const response = await fetch("./data/spotify_data.json");
+  const response = await fetch(
+    `./data/spotify_data.json?timestamp=${Date.now()}`,
+  );
   const allTracks: Track[] = await response.json();
 
   return allTracks.filter((track) => {
