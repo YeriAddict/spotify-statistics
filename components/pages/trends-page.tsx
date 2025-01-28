@@ -45,7 +45,7 @@ export default function TrendsPageComponent() {
     { key: "2016", label: "2016" },
     { key: "2015", label: "2015" },
   ];
-  const [selectedPeriod, setSelectedPeriod] = useState<PeriodKey>("2024");
+  const [selectedPeriod, setSelectedPeriod] = useState<PeriodKey>("2025");
 
   const periodMap = {
     2025: {

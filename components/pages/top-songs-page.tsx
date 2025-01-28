@@ -14,6 +14,7 @@ import {
   useTopTracksOnYear,
 } from "@/hooks/useTopTracks";
 import { secondsToString } from "@/utils/time-processing";
+import { getCurrentDateInfo } from "@/utils/date-utils";
 
 export default function TopSongsPageComponent() {
   const dropdownItems = [
@@ -33,30 +34,32 @@ export default function TopSongsPageComponent() {
 
   const [selectedPeriod, setSelectedPeriod] = useState<PeriodKey>("today");
 
+  const { year, month, formattedDate } = getCurrentDateInfo();
+
   const {
     tracks: todayTracks,
     isLoading: todayLoading,
     hasMore: todayHasMore,
     loadMore: loadMoreToday,
-  } = useTopTracksOnDate("2025-01-27", 10, selectedPeriod === "today");
+  } = useTopTracksOnDate(formattedDate, 10, selectedPeriod === "today");
   const {
     tracks: weekTracks,
     isLoading: weekLoading,
     hasMore: weekHasMore,
     loadMore: loadMoreWeek,
-  } = useTopTracksOnWeek("2025-01-27", 10, selectedPeriod === "this_week");
+  } = useTopTracksOnWeek(formattedDate, 10, selectedPeriod === "this_week");
   const {
     tracks: monthTracks,
     isLoading: monthLoading,
     hasMore: monthHasMore,
     loadMore: loadMoreMonth,
-  } = useTopTracksOnMonth(2025, 1, 10, selectedPeriod === "this_month");
+  } = useTopTracksOnMonth(year, month, 10, selectedPeriod === "this_month");
   const {
     tracks: yearTracks,
     isLoading: yearLoading,
     hasMore: yearHasMore,
     loadMore: loadMoreYear,
-  } = useTopTracksOnYear(2025, 10, selectedPeriod === "this_year");
+  } = useTopTracksOnYear(year, 10, selectedPeriod === "this_year");
   const {
     tracks: allTimeTracks,
     isLoading: allTimeLoading,

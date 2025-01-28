@@ -14,6 +14,7 @@ import {
   useTopAlbumsOnWeek,
   useTopAlbumsOnYear,
 } from "@/hooks/useTopAlbums";
+import { getCurrentDateInfo } from "@/utils/date-utils";
 
 export default function TopAlbumsPageComponent() {
   const dropdownItems = [
@@ -33,30 +34,32 @@ export default function TopAlbumsPageComponent() {
 
   const [selectedPeriod, setSelectedPeriod] = useState<PeriodKey>("today");
 
+  const { year, month, formattedDate } = getCurrentDateInfo();
+
   const {
     albums: todayAlbums,
     isLoading: todayLoading,
     hasMore: todayHasMore,
     loadMore: loadMoreToday,
-  } = useTopAlbumsOnDate("2025-01-27", 10, selectedPeriod === "today");
+  } = useTopAlbumsOnDate(formattedDate, 10, selectedPeriod === "today");
   const {
     albums: weekAlbums,
     isLoading: weekLoading,
     hasMore: weekHasMore,
     loadMore: loadMoreWeek,
-  } = useTopAlbumsOnWeek("2025-01-27", 10, selectedPeriod === "this_week");
+  } = useTopAlbumsOnWeek(formattedDate, 10, selectedPeriod === "this_week");
   const {
     albums: monthAlbums,
     isLoading: monthLoading,
     hasMore: monthHasMore,
     loadMore: loadMoreMonth,
-  } = useTopAlbumsOnMonth(2025, 1, 10, selectedPeriod === "this_month");
+  } = useTopAlbumsOnMonth(year, month, 10, selectedPeriod === "this_month");
   const {
     albums: yearAlbums,
     isLoading: yearLoading,
     hasMore: yearHasMore,
     loadMore: loadMoreYear,
-  } = useTopAlbumsOnYear(2025, 10, selectedPeriod === "this_year");
+  } = useTopAlbumsOnYear(year, 10, selectedPeriod === "this_year");
   const {
     albums: allTimeAlbums,
     isLoading: allTimeLoading,

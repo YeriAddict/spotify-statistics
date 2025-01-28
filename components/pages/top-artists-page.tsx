@@ -14,6 +14,7 @@ import {
   useTopArtistsOnYear,
 } from "@/hooks/useTopArtists";
 import { secondsToString } from "@/utils/time-processing";
+import { getCurrentDateInfo } from "@/utils/date-utils";
 
 export default function TopArtistsPageComponent() {
   const dropdownItems = [
@@ -32,30 +33,32 @@ export default function TopArtistsPageComponent() {
     | "all_time";
   const [selectedPeriod, setSelectedPeriod] = useState<PeriodKey>("today");
 
+  const { year, month, formattedDate } = getCurrentDateInfo();
+
   const {
     artists: todayArtists,
     isLoading: todayLoading,
     hasMore: todayHasMore,
     loadMore: loadMoreToday,
-  } = useTopArtistsOnDate("2025-01-27", 10, selectedPeriod === "today");
+  } = useTopArtistsOnDate(formattedDate, 10, selectedPeriod === "today");
   const {
     artists: weekArtists,
     isLoading: weekLoading,
     hasMore: weekHasMore,
     loadMore: loadMoreWeek,
-  } = useTopArtistsOnWeek("2025-01-27", 10, selectedPeriod === "this_week");
+  } = useTopArtistsOnWeek(formattedDate, 10, selectedPeriod === "this_week");
   const {
     artists: monthArtists,
     isLoading: monthLoading,
     hasMore: monthHasMore,
     loadMore: loadMoreMonth,
-  } = useTopArtistsOnMonth(2025, 1, 10, selectedPeriod === "this_month");
+  } = useTopArtistsOnMonth(year, month, 10, selectedPeriod === "this_month");
   const {
     artists: yearArtists,
     isLoading: yearLoading,
     hasMore: yearHasMore,
     loadMore: loadMoreYear,
-  } = useTopArtistsOnYear(2025, 10, selectedPeriod === "this_year");
+  } = useTopArtistsOnYear(year, 10, selectedPeriod === "this_year");
   const {
     artists: allTimeArtists,
     isLoading: allTimeLoading,
